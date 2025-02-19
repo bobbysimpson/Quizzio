@@ -1,0 +1,65 @@
+<!DOCTYPE html> <!-- This is the create a flashcard page created by Rahul Mehra use this as the reference when doing backend/DB-->
+<html lang="en"> <!-- Any questions feel free to message me thanks! -->
+<head>     <!-- PLEASE DO NOT EDIT THIS WITHOUT LETTING ME KNOW -->
+    <meta charset="UTF-8"> <!-- Version 1.0-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzio - Create</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script> 
+</head>
+<body>
+
+    <header>
+        <h1>Quizzio</h1>
+        <div class="user-box">
+            <div class="user-info">
+                <span class="username">Guest</span>
+                <a href="profile.html" class="profile-link">Profile</a>
+                <a href="login.html" class="logout-link">Logout</a>
+            </div>
+            <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic">
+        </div>
+    </header>
+
+    <main>
+        <section class="create-box">
+            <h2>Create a New Quiz</h2>
+            <form id="quizForm">
+                <label for="quizTitle">Quiz Name:</label>
+                <input type="text" id="quizTitle" placeholder="Enter quiz name..." required>
+
+                <label for="quizCategory">Category:</label>
+                <select id="quizCategory" required>
+                    <option value="" disabled selected>Select a category</option>
+                    <option value="Math">Math</option>
+                    <option value="Science">Science</option>
+                    <option value="History">History</option>
+                    <option value="Languages">Languages</option>
+                    <option value="Languages">Computing</option>
+                    <option value="Languages">Other</option>
+                </select>
+
+                <button type="button" id="createQuizBtn">Create Quiz</button>
+            </form>
+        </section>
+
+        <div id="flashcardContainer"></div> 
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <img src="https://img.icons8.com/ios-glyphs/20/ffffff/home.png" alt="Home">
+            <span>Home</span>
+        </a>
+        <a href="create.html" class="nav-item active">
+            <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
+            <span>Create</span>
+        </a>
+        <a href="library.html" class="nav-item">
+            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
+            <span>Library</span>
+        </a>
+    </nav>
+
+</body>
+</html>

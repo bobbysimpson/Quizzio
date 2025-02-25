@@ -10,6 +10,7 @@ app.config['MYSQL_DB'] = 'sgbsimp2'
  
 mysql = MySQL(app)
 
+@app.route('/login.html')
 @app.route('/', methods = ['POST', 'GET'])
 def index():
     return render_template('login.html')
@@ -42,8 +43,13 @@ def adduser():
         password_hash = request.form['password']
         email = request.form['email']
         cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO users (username, password_hash, email) VALUES(%s,%s,%s)''',(username,password_hash, email))
-        mysql.connection.commit()
+        cursor.execute('''SELECT username, email FROM users WHERE username = %s OR email = %s''', [username, email])
+        record = cursor.fetchall()
+        if len(record) != 0:
+            return f"User account already exists"
+        else:
+            cursor.execute(''' INSERT INTO users (username, password_hash, email) VALUES(%s,%s,%s)''',(username,password_hash, email))
+            mysql.connection.commit()
         cursor.close()
         return render_template("index.html", username = username)
  

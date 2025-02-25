@@ -10,26 +10,6 @@ app.config['MYSQL_DB'] = 'sgbsimp2'
  
 mysql = MySQL(app)
 
-@app.route('/signup')
-def signup():
-    return render_template('signup.html')
-
-@app.route('/adduser', methods = ['POST', 'GET'])
-def adduser():
-    if request.method == 'GET':
-        return "Login via the login Form"
-     
-    if request.method == 'POST':
-        username = request.form['username']
-        password_hash = request.form['password']
-        email = request.form['email']
-        userid = 2
-        cursor = mysql.connection.cursor()
-        cursor.execute(''' INSERT INTO users (username, password_hash, email) VALUES(%s,%s,%s)''',(username,password_hash, email))
-        mysql.connection.commit()
-        cursor.close()
-        return f"Done!!"
-
 @app.route('/', methods = ['POST', 'GET'])
 def index():
     return render_template('login.html')
@@ -50,6 +30,21 @@ def login():
             if password_hash != userRecord[0][1]:
                 return f"Incorrect password"
             else:
-                return render_template('index.html')
+                return render_template('index.html', username = userRecord[0][0])
+
+@app.route('/adduser', methods = ['POST', 'GET'])
+def adduser():
+    if request.method == 'GET':
+        return "Login via the login Form"
+     
+    if request.method == 'POST':
+        username = request.form['username']
+        password_hash = request.form['password']
+        email = request.form['email']
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' INSERT INTO users (username, password_hash, email) VALUES(%s,%s,%s)''',(username,password_hash, email))
+        mysql.connection.commit()
+        cursor.close()
+        return render_template("index.html", username = username)
  
 app.run(host='localhost', port=5000)

@@ -1,4 +1,4 @@
-from flask import Flask,render_template, request
+from flask import Flask,render_template, request,make_response
 from flask_mysqldb import MySQL
  
 app = Flask(__name__)
@@ -17,6 +17,7 @@ def index():
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
+    error = None
     if request.method == 'GET':
         return f"????"
     if request.method == 'POST':
@@ -26,15 +27,19 @@ def login():
         cursor.execute('''SELECT username, password_hash FROM users WHERE username = %s''', [username])
         userRecord = cursor.fetchall()
         if len(userRecord) == 0:
-            return f"User does not exist"
+            error = "User does not exist"
         else:
             if password_hash != userRecord[0][1]:
-                return f"Incorrect password"
+                error = "Incorrect password"
             else:
+                resp = make_response()
+                resp.set_cookie(username, userRecord[0][0])
                 return render_template('index.html', username = userRecord[0][0])
+        return render_template('login.html', error=error)
 
 @app.route('/adduser', methods = ['POST', 'GET'])
 def adduser():
+    error = None
     if request.method == 'GET':
         return "Login via the login Form"
      
@@ -46,11 +51,13 @@ def adduser():
         cursor.execute('''SELECT username, email FROM users WHERE username = %s OR email = %s''', [username, email])
         record = cursor.fetchall()
         if len(record) != 0:
-            return f"User account already exists"
+            error = "User already exists"
         else:
             cursor.execute(''' INSERT INTO users (username, password_hash, email) VALUES(%s,%s,%s)''',(username,password_hash, email))
             mysql.connection.commit()
-        cursor.close()
-        return render_template("index.html", username = username)
- 
+            cursor.close()
+            resp = make_response()
+            resp.set_cookie(username, username)
+            return render_template("index.html", username = username)
+        return render_template('login.html', error=error)
 app.run(host='localhost', port=5000)

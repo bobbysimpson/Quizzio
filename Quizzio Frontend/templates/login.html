@@ -32,6 +32,9 @@
                     <a href="#" id="signupLink">Sign Up</a>
                 </div>
             </form>
+            {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+            {% endif %}
 
             <!-- Restore Continue as Guest Button -->
             <a href="index.html" class="continue-guest">Continue as Guest</a>
@@ -56,6 +59,9 @@
                     <a href="#" id="backToLogin1">Back to Login</a>
                 </div>
             </form>
+            {% if error %}
+            <p class=error><strong>Error:</strong> {{ error }}
+            {% endif %}
         </section>
 
         <!-- Forgot Password Form -->

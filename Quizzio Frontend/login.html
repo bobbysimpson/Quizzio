@@ -1,0 +1,77 @@
+<!-- V1.3 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzio - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Quizzio</h1>
+    </header>
+    
+    <main>
+        <!-- Login Form -->
+        <section id="loginForm" class="auth-box">
+            <h2>Login</h2>
+            <form>
+                <label for="login-username">Username:</label>
+                <input type="username" id="login-username" placeholder="Enter your username..." required>
+
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" placeholder="Enter your password..." required>
+
+                <button type="submit">Login</button>
+
+                <div class="auth-links">
+                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                    <span> | </span>
+                    <a href="#" id="signupLink">Sign Up</a>
+                </div>
+            </form>
+
+            <!-- Restore Continue as Guest Button -->
+            <a href="index.html" class="continue-guest">Continue as Guest</a>
+        </section>
+
+        <!-- Signup Form -->
+        <section id="signupForm" class="auth-box hidden">
+            <h2>Create an Account</h2>
+            <form>
+                <label for="signup-email">Email:</label>
+                <input type="email" id="signup-email" placeholder="Enter your email" required>
+                
+                <label for="signup-username">Username:</label>
+                <input type="text" id="signup-username" placeholder="Choose a username" required>
+                
+                <label for="signup-password">Password:</label>
+                <input type="password" id="signup-password" placeholder="Create a password" required>
+                
+                <button type="submit">Sign Up</button>
+                
+                <div class="auth-links">
+                    <a href="#" id="backToLogin1">Back to Login</a>
+                </div>
+            </form>
+        </section>
+
+        <!-- Forgot Password Form -->
+        <section id="forgotPasswordForm" class="auth-box hidden">
+            <h2>Reset Your Password</h2>
+            <form>
+                <label for="forgot-email">Enter your email:</label>
+                <input type="email" id="forgot-email" placeholder="Enter your email" required>
+                
+                <button type="submit">Send Reset Link</button>
+                
+                <div class="auth-links">
+                    <a href="#" id="backToLogin2">Back to Login</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

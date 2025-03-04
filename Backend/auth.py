@@ -8,7 +8,7 @@ import os
 
 auth = Blueprint('auth', __name__, template_folder=os.path.abspath("./Frontend/templates"))
 
-@auth.route('/', methods=['GET', 'POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
   # debug: print('reached login page') #REACHED
   if request.method == 'POST':
@@ -29,3 +29,7 @@ def login():
       print('User does not exist.') #HERE
 
   return render_template('login.html', user=current_user)
+
+@auth.route('/sign-up')
+def sign_up():
+  return render_template('signup.html')

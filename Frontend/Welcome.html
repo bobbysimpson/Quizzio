@@ -5,6 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quizzio - Welcome</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Scroll container limits the height and enables vertical scrolling */
+    .scroll-container {
+      max-height: 600px; /* Adjust as needed */
+      overflow-y: auto;
+      padding: 20px;
+      background-color: #2b2b41; /* Matching card-like background from your style.css */
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    /* Styling for the welcome content headings and paragraphs */
+    .welcome-content h2 {
+      font-size: 2em;
+      color: #f0c808; /* Accent yellow */
+      margin-bottom: 10px;
+      border-bottom: 2px solid #3b3b57; /* Using header/nav color for a subtle border */
+      padding-bottom: 5px;
+    }
+    .welcome-content h3 {
+      font-size: 1.5em;
+      color: #f0c808;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    .welcome-content h4 {
+      font-size: 1.2em;
+      color: #f0c808;
+      margin-top: 15px;
+      margin-bottom: 8px;
+    }
+    .welcome-content p {
+      font-size: 1em;
+      margin-bottom: 15px;
+      color: white; /* Keep text white per original scheme */
+    }
+    .welcome-content ol, .welcome-content ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -20,47 +61,75 @@
   </header>
 
   <main>
-    <section class="welcome-content">
-      <!-- You can add your custom text here -->
-      <h2>Welcome to Quizzio!</h2>
-      <p>
-        Welcome to Quizzio – Your Ultimate Study Companion! 🎓📚
+    <!-- The scroll-container wraps the midsection to enable scrolling -->
+    <div class="scroll-container">
+      <section class="welcome-content">
+        <h2>Welcome to Quizzio!</h2>
 
-        Quizzio is an interactive quiz and flashcard platform designed to help you learn, revise, and test your knowledge efficiently. Whether you’re studying for an exam, practicing new concepts, or just want to challenge yourself, Quizzio provides the perfect tools to enhance your learning experience.
+        <!-- Introduction Section -->
+        <section class="introduction">
+          <p>Welcome to Quizzio – Your Ultimate Study Companion! 🎓📚</p>
+          <p>
+            Quizzio is an interactive quiz and flashcard platform designed to help you learn, revise, and test your knowledge efficiently. Whether you’re studying for an exam, practicing new concepts, or just want to challenge yourself, Quizzio provides the perfect tools to enhance your learning experience.
+          </p>
+        </section>
 
-        ✨ How to Use Quizzio
+        <!-- How to Use Section -->
+        <section class="how-to-use">
+          <h3>How to Use Quizzio</h3>
+          <h4>Getting Started</h4>
+          <ol>
+            <li><strong>Open Quizzio:</strong> When you land on the homepage, you will be greeted with a simple and intuitive interface.</li>
+            <li><strong>Navigate Easily:</strong> The bottom navigation bar helps you quickly switch between the Home, Library, and Create sections.</li>
+            <li><strong>Access Your Profile:</strong> In the top right corner, you’ll see your username and profile settings, where you can manage your account.</li>
+          </ol>
+        </section>
 
-📌 Getting Started
-	1.	Open Quizzio – When you land on the homepage, you will be greeted with a simple and intuitive interface.
-	2.	Navigate Easily – The bottom navigation bar helps you quickly switch between the Home, Library, and Create sections.
-	3.	Access Your Profile – In the top right corner, you’ll see your username and profile settings, where you can manage your account.
+        <!-- Features Section -->
+        <section class="features">
+          <h3>Features &amp; How to Use Them</h3>
+          
+          <article class="feature">
+            <h4>Create Your Own Flashcards</h4>
+            <ul>
+              <li>Click on the “Create” tab from the bottom navigation bar.</li>
+              <li>Fill in the question and answer fields to create a new flashcard.</li>
+              <li>Click “Save” to store the flashcard in your library.</li>
+              <li>Use flashcards for quick revision and self-testing.</li>
+            </ul>
+          </article>
 
-  🚀 Features & How to Use Them
+          <article class="feature">
+            <h4>Explore &amp; Manage Your Flashcards</h4>
+            <ul>
+              <li>Go to the “Library” tab to access all your saved flashcard sets.</li>
+              <li>Click on a flashcard set to start reviewing.</li>
+              <li>Mark difficult flashcards for easy access later.</li>
+              <li>Delete flashcards you no longer need.</li>
+            </ul>
+          </article>
 
-1️⃣ Create Your Own Flashcards
-	•	Click on the “Create” tab from the bottom navigation bar.
-	•	Fill in the question and answer fields to create a new flashcard.
-	•	Click “Save” to store the flashcard in your library.
-	•	Use flashcards for quick revision and self-testing.
+          <article class="feature">
+            <h4>Test Yourself with Quizzes</h4>
+            <ul>
+              <li>Select a flashcard set from the library to generate a quiz.</li>
+              <li>Answer multiple-choice or short-answer questions.</li>
+              <li>Get instant feedback on your answers.</li>
+              <li>Track your progress to see how well you’re doing.</li>
+            </ul>
+          </article>
 
-2️⃣ Explore & Manage Your Flashcards
-	•	Go to the “Library” tab to access all your saved flashcard sets.
-	•	Click on a flashcard set to start reviewing.
-	•	Mark difficult flashcards for easy access later.
-	•	Delete flashcards you no longer need.
-
-3️⃣ Test Yourself with Quizzes
-	•	Select a flashcard set from the library to generate a quiz.
-	•	Answer multiple-choice or short-answer questions.
-	•	Get instant feedback on your answers.
-	•	Track your progress to see how well you’re doing.
-
-4️⃣ Customize Your Learning
-	•	In your Profile section, you can edit your username, email, and password.
-	•	Bookmark flashcards and quizzes for later review.
-	•	Challenge yourself with different flashcard categories.
-      <!-- Add more text or elements as needed -->
-    </section>
+          <article class="feature">
+            <h4>Customize Your Learning</h4>
+            <ul>
+              <li>In your Profile section, you can edit your username, email, and password.</li>
+              <li>Bookmark flashcards and quizzes for later review.</li>
+              <li>Challenge yourself with different flashcard categories.</li>
+            </ul>
+          </article>
+        </section>
+      </section>
+    </div>
   </main>
 
   <nav class="bottom-nav">

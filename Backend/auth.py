@@ -12,9 +12,9 @@ auth = Blueprint('auth', __name__, template_folder=os.path.abspath("./Frontend/t
 def login():
   # debug: print('reached login page') #REACHED
   if request.method == 'POST':
-    print('received POST request') #NOT REACHED
+    # debug: print('received POST request') #NOT REACHED
     username = request.form.get('login-username')
-    print('got username')
+    #debug: print('got username')
     password = request.form.get('login-password')
 
     user = User.query.filter_by(username=username).first()

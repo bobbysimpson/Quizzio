@@ -8,6 +8,7 @@ import os
 
 auth = Blueprint('auth', __name__, template_folder=os.path.abspath("./Frontend/templates"))
 
+@auth.route('/', methods=['GET', 'POST'])
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
   # debug: print('reached login page') #REACHED
@@ -30,6 +31,30 @@ def login():
 
   return render_template('login.html', user=current_user)
 
-@auth.route('/sign-up')
+@auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
-  return render_template('signup.html')
+  if request.method == 'POST':
+    email = request.form.get('signup-email')
+    username = request.form.get('signup-username')
+    password = request.form.get('signup-password')
+    
+
+    user = User.query.filter_by(email=email).first()
+    if user:
+      flash('Email already exists', category='error')
+
+    if len(email) < 4:
+      flash('Email must be greater than 3 characters', category='error')
+    elif len(username) < 2:
+      flash('Username must be greater than 1 character', category='error')
+    elif len(password) < 7:
+      flash('Password must be at least 7 characters', category='error')
+    else:
+      new_user = User(email=email, username=username, password=generate_password_hash(password, method='pbkdf2:sha256'))
+      db.session.add(new_user)
+      db.session.commit()
+      #login_user(user, remember=True)
+      flash('Account created!', category='success')
+      return redirect(url_for('views.home')) #logs them in and redirects them to welcome page
+
+  return render_template('login.html', user=current_user)

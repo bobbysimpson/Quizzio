@@ -34,9 +34,13 @@ def login():
 @auth.route('/signup', methods=['GET', 'POST'])
 def sign_up():
   if request.method == 'POST':
-    email = request.form.get('signup-email')
-    username = request.form.get('signup-username')
-    password = request.form.get('signup-password')
+    email = request.form.get('email')
+    #print('debug' + email)
+    username = request.form.get('username')
+    # print('debug:')
+    # print(username)
+    # RETURNS NONE
+    password = request.form.get('password')
     
 
     user = User.query.filter_by(email=email).first()

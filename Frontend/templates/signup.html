@@ -1,0 +1,72 @@
+<!-- signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizzio - Sign Up</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    .flashes {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 10px 20px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Quizzio</h1>
+  </header>
+
+  <main>
+    <!-- Flash Messages Block -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Signup Form -->
+    <section id="signupForm" class="auth-box">
+      <h2>Create an Account</h2>
+      <form action="/signup" method="POST">
+        <label for="signup-email">Email:</label>
+        <input type="email" id="signup-email" name="email" placeholder="Enter your email" required />
+        <label for="signup-username">Username:</label>
+        <input type="text" id="signup-username" name="username" placeholder="Choose a username" required />
+        <label for="signup-password">Password:</label>
+        <input type="password" id="signup-password" name="password" placeholder="Create a password" required />
+        <button type="submit">Sign Up</button>
+        <div class="auth-links">
+          <a href="login.html" id="backToLogin1">Back to Login</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Hide flash messages after 5 seconds
+    document.addEventListener("DOMContentLoaded", function() {
+      setTimeout(function() {
+        const flashMessages = document.querySelector(".flashes");
+        if (flashMessages) {
+          flashMessages.style.display = "none";
+        }
+      }, 5000);
+    });
+  </script>
+</body>
+</html>

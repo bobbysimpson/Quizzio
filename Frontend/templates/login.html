@@ -1,0 +1,76 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizzio - Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+  <style>
+    /* Styling for flash messages */
+    .flashes {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 10px 20px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Quizzio</h1>
+  </header>
+
+  <main>
+    <!-- Flash Messages Block -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Login Form -->
+    <section id="loginForm" class="auth-box">
+      <h2>Login</h2>
+      <form action="/login" method="POST">
+        <label for="login-username">Username:</label>
+        <input type="text" id="login-username" name="username" placeholder="Enter your username..." required />
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" name="password" placeholder="Enter your password..." required />
+        <button type="submit">Login</button>
+        <div class="auth-links">
+          <a href="forgotpass.html" id="forgotPasswordLink">Forgot Password?</a>
+          <span> | </span>
+          <a href="signup.html" id="signupLink">Sign Up</a>
+        </div>
+      </form>
+      <!-- Continue as Guest Button -->
+      <a href="index.html" class="continue-guest">Continue as Guest</a>
+    </section>
+  </main>
+
+  <script>
+    // Hide flash messages after 5 seconds
+    document.addEventListener("DOMContentLoaded", function() {
+      setTimeout(function() {
+        const flashMessages = document.querySelector(".flashes");
+        if (flashMessages) {
+          flashMessages.style.display = "none";
+        }
+      }, 5000);
+    });
+  </script>
+</body>
+</html>

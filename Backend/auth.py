@@ -31,7 +31,7 @@ def login():
 
   return render_template('login.html', user=current_user)
 
-@auth.route('/sign-up', methods=['GET', 'POST'])
+@auth.route('/signup', methods=['GET', 'POST'])
 def sign_up():
   if request.method == 'POST':
     email = request.form.get('signup-email')
@@ -57,4 +57,4 @@ def sign_up():
       flash('Account created!', category='success')
       return redirect(url_for('views.home')) #logs them in and redirects them to welcome page
 
-  return render_template('login.html', user=current_user)
+  return render_template('signup.html', user=current_user)

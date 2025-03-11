@@ -1,10 +1,17 @@
-from . import db
 from flask_login import UserMixin
-from sqlalchemy.sql import func
 
-class User(db.Model, UserMixin):
-  id = db.Column(db.Integer, primary_key=True)
-  email = db.Column(db.String(150), unique=True)
-  password = db.Column(db.String(150))
-  username = db.Column(db.String(150), unique=True)
-  
+class User(UserMixin):
+    def __init__(self, user_id, email, username, password_hash):
+        self.id = user_id  # Flask-Login expects the user identifier to be stored in `id`
+        self.email = email
+        self.username = username
+        self.password_hash = password_hash
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            user_id=data.get("user_id"),
+            email=data.get("email"),
+            username=data.get("username"),
+            password_hash=data.get("password_hash")
+        )

@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, session
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, login_required, logout_user, current_user
+
 
 auth = Blueprint('auth', __name__)
 
@@ -15,6 +17,9 @@ def signup():
             flash("All fields are required.", "error")
             return redirect(url_for('auth.signup'))
         
+        # NEED TO ADD CODE WHICH checks if email already exists
+        # ADD CODE WHICH VALIDATES EMAIL AND PASSWORD E.G. if password > 3 chars etc
+        
         password_hash = generate_password_hash(password)
         
         # Insert new user into Supabase 'users' table
@@ -23,7 +28,6 @@ def signup():
             "username": username,
             "password_hash": password_hash
         }).execute()
-        
         
         flash("Account created successfully! Please log in.", "success")
         return redirect(url_for('auth.login'))
@@ -56,9 +60,16 @@ def login():
             session["user_id"] = user["user_id"]
             session["username"] = user["username"]
             flash("Logged in successfully!", "success")
+            login_user(user, remember=True)
             return redirect(url_for('views.index'))
         else:
             flash("Invalid username or password.", "error")
             return redirect(url_for('auth.login'))
     
     return render_template("login.html")
+
+@auth.route('/logout')
+@login_required  # this decorator makes sure the user is logged in before they can access the route. If not, they'll be redirected to the login page. 
+def logout():
+  logout_user()
+  return redirect(url_for('auth.login'))

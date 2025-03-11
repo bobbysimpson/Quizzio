@@ -13,7 +13,7 @@ SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://ymspflrxipjlipncgzyy.supa
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inltc3BmbHJ4aXBqbGlwbmNnenl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2OTcxMzYsImV4cCI6MjA1NzI3MzEzNn0.jNFsla4rFX1WWiyS7Iu0GBYQQG8iMv2YLQ-3aHaWRGs")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# In-memory storage for reset tokens (for demonstration purposes)
+# In-memory storage for reset tokens (for demonstration pxurposes)
 reset_tokens = {}  # Format: {token: email}
 
 # SMTP configuration for Gmail

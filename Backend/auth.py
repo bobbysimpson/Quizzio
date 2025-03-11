@@ -24,9 +24,6 @@ def signup():
             "password_hash": password_hash
         }).execute()
         
-        if response.error:
-            flash("Error: " + response.error.message, "error")
-            return redirect(url_for('auth.signup'))
         
         flash("Account created successfully! Please log in.", "success")
         return redirect(url_for('auth.login'))
@@ -47,9 +44,6 @@ def login():
         # Query the 'users' table by username
         response = supabase.table("users").select("*").eq("username", username).execute()
         
-        if response.error:
-            flash("An error occurred while accessing the database.", "error")
-            return redirect(url_for('auth.login'))
         
         if not response.data or len(response.data) == 0:
             flash("Invalid username or password.", "error")

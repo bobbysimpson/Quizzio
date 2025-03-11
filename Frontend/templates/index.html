@@ -4,7 +4,8 @@
     <meta charset="UTF-8"> <!-- PLEASE DO NOT EDIT THIS WITHOUT LETTING ME KNOW -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quizzio - Home</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    
 </head>
 <body>
 
@@ -18,8 +19,8 @@
         <div class="user-box">
            <div class="user-info">
                <span class="username">Guest</span>
-               <a href="profile.html" class="profile-link">Profile</a>
-               <a href="login.html" class="logout-link">Logout</a>
+               <a href="profile" class="profile-link">Profile</a>
+               <a href="login" class="logout-link">Logout</a>
            </div>
            <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic">
        </div>
@@ -28,12 +29,12 @@
     <main>
         <section class="get-started">
             <h2>Here's how to get started</h2>
-            <a href="Welcome.html" class="subject-link">
+            <a href="Welcome" class="subject-link">
               <div class="card">
                 <h3>Quizzio Study Guides!</h3>
               </div>
             </div>
-            <a href="create.html" class="subject-link">
+            <a href="create" class="subject-link">
               <div class="card">
                 <h3>Create Your Own Flashcards</h3>
               </div>

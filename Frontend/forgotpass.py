@@ -2,11 +2,18 @@ from flask import Flask, request, render_template, url_for, redirect, flash
 import smtplib
 from email.mime.text import MIMEText
 import secrets
+from supabase import create_client, Client
+import os
 
 app = Flask(__name__)
 app.secret_key = 'MY_SUPER_SECRET_KEY'  # Replace with a strong secret key
 
-# In-memory storage for reset tokens (for demonstration)
+# Set up Supabase credentials (ideally use environment variables in production)
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://ymspflrxipjlipncgzyy.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inltc3BmbHJ4aXBqbGlwbmNnenl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2OTcxMzYsImV4cCI6MjA1NzI3MzEzNn0.jNFsla4rFX1WWiyS7Iu0GBYQQG8iMv2YLQ-3aHaWRGs")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# In-memory storage for reset tokens (for demonstration purposes)
 reset_tokens = {}  # Format: {token: email}
 
 # SMTP configuration for Gmail
@@ -41,16 +48,24 @@ def forgot_password():
         # Render the forgot password page (forgotpass.html)
         return render_template("forgotpass.html")
     else:
-        # POST: Process the form submission
+        # Process the form submission
         email = request.form.get("email")
         
-        # Generate a unique token for password reset and store it
+        # Query Supabase to check if the email exists in the "users" table
+        response = supabase.table("users").select("*").eq("email", email).execute()
+        
+        # Check if any data was returned; if not, flash "Invalid email."
+        if not response.data or len(response.data) == 0:
+            flash("Invalid email.", "error")
+            return redirect(url_for("forgot_password"))
+        
+        # Email exists: generate a unique token for password reset and store it
         token = secrets.token_urlsafe(16)
         reset_tokens[token] = email
 
-        # Send reset email unconditionally
+        # Send the reset email and flash a message accordingly
         if send_reset_email(email, token):
-            flash("Password reset link has been sent to your email.", "success")
+            flash("Reset email sent.", "success")
         else:
             flash("Failed to send password reset email. Please try again later.", "error")
 

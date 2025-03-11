@@ -5,7 +5,7 @@ from os import path
 from flask_login import LoginManager
 
 db = SQLAlchemy()
-DB_NAME = 'database.db'
+DB_NAME = 'Quizziotest1.db'
 
 def create_app():
 
@@ -21,13 +21,14 @@ def create_app():
   app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
   db.init_app(app)
   
-  from .auth import auth
   from .views import views
+  from .auth import auth
+  
   
 
-  
-  app.register_blueprint(auth, url_prefix='/')
   app.register_blueprint(views, url_prefix='/')
+  app.register_blueprint(auth, url_prefix='/')
+  
 
   from .models import User
 

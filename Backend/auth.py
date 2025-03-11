@@ -11,19 +11,22 @@ auth = Blueprint('auth', __name__, template_folder=os.path.abspath("./Frontend/t
 @auth.route('/', methods=['GET', 'POST'])
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-  # debug: print('reached login page') #REACHED
+  # print('reached login page') #REACHED
   if request.method == 'POST':
-    # debug: print('received POST request') #NOT REACHED
-    username = request.form.get('login-username')
-    #debug: print('got username')
-    password = request.form.get('login-password')
+    # print('received POST request') # REACHED
+    username = request.form.get('username')
+    print('got username:')
+    print(username)
+    print('^^^^^^^^')
+    password = request.form.get('password')
 
     user = User.query.filter_by(username=username).first()
     if user:
       if check_password_hash(user.password, password):
         print("Log in successful") #NEED TO IMPLEMENT FLASH MESSAGES HERE
         #login_user(user, remember=True)
-        return redirect(url_for('index.html'))
+        print('Debug: tries to redirct to views.home')
+        return redirect(url_for('views.home'))
       else:
         print('Incorrect password') #HERE
     else:

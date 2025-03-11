@@ -35,9 +35,10 @@ def create_app():
     def load_user(user_id):
         # Access the Supabase client from app config
         supabase = app.config["SUPABASE_CLIENT"]
-        # Query the 'users' table by user_id (make sure your Supabase table has a 'user_id' primary key)
+        # Query the 'users' table by user_id
         response = supabase.table("users").select("*").eq("user_id", user_id).execute()
-        if response.error or not response.data:
+        # Check if data exists in the response; if not, return None.
+        if not response.data:
             return None
         user_data = response.data[0]
         return User.from_dict(user_data)
@@ -50,6 +51,3 @@ def create_app():
     
     return app
 
-if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)

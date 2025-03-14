@@ -23,13 +23,20 @@ def create_app():
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
     app.config["SUPABASE_CLIENT"] = supabase
 
-    # Initialize Flask-Login
-    login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
-    login_manager.init_app(app)
+   
+     # Register blueprints for your views and authentication routes
+    from .views import views
+    from .auth import auth
+
+    app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(auth, url_prefix='/')
     
     # Import the User model to support user loading
     from .models import User
+
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -43,11 +50,6 @@ def create_app():
         user_data = response.data[0]
         return User.from_dict(user_data)
     
-    # Register blueprints for your views and authentication routes
-    from .views import views
-    from .auth import auth
-    app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='/')
     
     return app
 

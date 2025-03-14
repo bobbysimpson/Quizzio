@@ -18,3 +18,31 @@ def guides():
 @views.route('/create')
 def create():
     return render_template("create.html")
+
+@views.route('/english')
+def english():
+    return render_template("English.html")
+
+@views.route('/language')
+def language():
+    return render_template("Language.html")
+
+@views.route('/maths')
+def maths():
+    return render_template("Maths.html")
+
+@views.route('/science')
+def science():
+    return render_template("Science.html")
+
+@views.route('/computing')
+def computing():
+    return render_template("Computing.html")
+
+@views.route('/other')
+def other():
+    return render_template("Other.html")
+
+@views.route('/library')
+def library():
+    return render_template("library.html")

@@ -44,32 +44,32 @@
 
         <section class="browse">
             <h2>Browse by Subject</h2>
-            <a href="english.html" class="subject-link">
+            <a href="{{ url_for('views.english') }}" class="subject-link">
               <div class="card">
                 <h3>English</h3>
               </div>
             </a>
-            <a href="language.html" class="subject-link">
+            <a href="{{ url_for('views.language') }}" class="subject-link">
               <div class="card">
                 <h3>Languages</h3>
               </div>
             </a>
-            <a href="maths.html" class="subject-link">
+            <a href="{{ url_for('views.maths') }}" class="subject-link">
               <div class="card">
                 <h3>Maths</h3>
               </div>
             </a>
-            <a href="science.html" class="subject-link">
+            <a href="{{ url_for('views.science') }}" class="subject-link">
               <div class="card">
                 <h3>Science</h3>
               </div>
             </a>
-            <a href="computing.html" class="subject-link">
+            <a href="{{ url_for('views.computing') }}" class="subject-link">
               <div class="card">
                 <h3>Computing</h3>
               </div>
             </a>
-            <a href="other.html" class="subject-link">
+            <a href="{{ url_for('views.other') }}" class="subject-link">
               <div class="card">
                 <h3>Other</h3>
               </div>
@@ -79,16 +79,16 @@
     </main>
 
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active">
-            <img src="https://img.icons8.com/ios-glyphs/20/ffffff/home.png" alt="Home">
+      <a href="{{ url_for('views.index') }}" class="subject-link">
+        <img src="https://img.icons8.com/ios-glyphs/20/ffffff/home.png" alt="Home">
             <span>Home</span>
         </a>
-        <a href="create.html" class="nav-item">
-            <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
+        <a href="{{ url_for('views.create') }}" class="subject-link">
+          <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
             <span>Create</span>
         </a>
-        <a href="library.html" class="nav-item">
-            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
+        <a href="{{ url_for('views.library') }}" class="subject-link">
+          <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
             <span>Library</span>
         </a>
     </nav>

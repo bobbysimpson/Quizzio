@@ -14,3 +14,7 @@ def index():
 @views.route('/guides', methods=['GET', 'POST'])
 def guides():
     return render_template("welcome.html")
+
+@views.route('/create')
+def create():
+    return render_template("create.html")

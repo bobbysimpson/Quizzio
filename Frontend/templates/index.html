@@ -18,7 +18,7 @@
         <!-- User Info Box (Added Feature) -->
         <div class="user-box">
            <div class="user-info">
-               <span class="username">Guest</span>
+            <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
                <a href="profile" class="profile-link">Profile</a>
                <a href="logout" class="logout-link">Logout</a>
            </div>

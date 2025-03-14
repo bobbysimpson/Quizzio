@@ -11,7 +11,7 @@
     <h1>Quizzio</h1>
     <div class="user-box">
       <div class="user-info">
-        <span class="username">Guest</span>
+        <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
         <a href="profile.html" class="profile-link">Profile</a>
         <a href="login.html" class="logout-link">Logout</a>
       </div>

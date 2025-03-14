@@ -11,6 +11,6 @@ def index():
 
 
 
-@views.route('/guides')
+@views.route('/guides', methods=['GET', 'POST'])
 def guides():
     return render_template("welcome.html")

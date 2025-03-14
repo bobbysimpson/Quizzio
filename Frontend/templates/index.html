@@ -29,10 +29,11 @@
     <main>
         <section class="get-started">
             <h2>Here's how to get started</h2>
-            <a href="Welcome" class="subject-link">
+            <a href="{{ url_for('views.guides') }}" class="subject-link">
               <div class="card">
                 <h3>Quizzio Study Guides!</h3>
               </div>
+              <!-- just incase there is no closing </a> here for future reference incase any issues surrounding this pop up-->
             </div>
             <a href="create" class="subject-link">
               <div class="card">

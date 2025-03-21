@@ -30,15 +30,15 @@
   </main>
 
   <nav class="bottom-nav">
-    <a href="index.html" class="nav-item">
+    <a href="{{ url_for('views.index') }}" class="nav-item">
       <img src="https://img.icons8.com/ios-glyphs/20/ffffff/home.png" alt="Home">
       <span>Home</span>
     </a>
-    <a href="create.html" class="nav-item">
+    <a href="{{ url_for('views.create') }}" class="nav-item">
       <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
       <span>Create</span>
     </a>
-    <a href="library.html" class="nav-item">
+    <a href="{{ url_for('views.library') }}" class="nav-item">
       <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
       <span>Library</span>
     </a>

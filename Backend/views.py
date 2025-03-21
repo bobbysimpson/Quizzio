@@ -6,7 +6,7 @@ views = Blueprint('views', __name__)
 @views.route('/')
 @login_required
 def index():
-    print(f"User authenticated: {current_user.is_authenticated}")
+    #print(f"User authenticated: {current_user.is_authenticated}")
     return render_template("index.html", user=current_user)
 
 

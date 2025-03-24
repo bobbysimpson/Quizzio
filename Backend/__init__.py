@@ -27,9 +27,11 @@ def create_app():
      # Register blueprints for your views and authentication routes
     from .views import views
     from .auth import auth
+    from .editprofile import editprofile
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(editprofile, url_prefix='/')
     
     # Import the User model to support user loading
     from .models import User

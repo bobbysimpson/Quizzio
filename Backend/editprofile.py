@@ -15,12 +15,10 @@ def profile():
 @editprofile.route('/edit', methods = ['GET', 'POST'])
 def edit():
     supabase = current_app.config["SUPABASE_CLIENT"]
-    print(User.query.filter_by(username=current_user.username).first())
     if request.method == 'POST':
-        jsonData = request.get_json()
-        newUsername = jsonData['username']
-        newEmail = jsonData['email']
-        newPassword = jsonData['password']
+        newUsername = request.form['newUsername']
+        newEmail = request.form['newEmail']
+        newPassword = request.form['newPassword']
         updateData = {}
         if len(newUsername) != 0:
             response = supabase.table("users").select("*").eq("username", newUsername).execute()
@@ -37,8 +35,19 @@ def edit():
         if len(newPassword) != 0:
             updateData['password'] = generate_password_hash(newPassword, method='pbkdf2:sha256')
         
-        response = supabase.table("users").update(json.dumps(updateData)).eq("username", session["username"]).execute()
-        print("User data saved successfully") # need to flash a message here
-    return User.query.filter_by(username=current_user.username).first()
+        print(updateData)
+        print(newUsername)
+        print(newEmail)
+        print(newPassword)
+        print(session["username"])
+        response = supabase.table("users").update(updateData).eq("username", session["username"]).execute()
+       # print(response.data)
+        if not response.data or len(response.data) == 0:
+        #    flash("Error: Nothing happened", "error")
+            print("Didn't work")
+        else:
+         #   flash("User data saved successfully", "success") # need to flash a message here
+              print("Did work")
+    return render_template('profile.html')
 
     

@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     window.saveProfile = function() {
+      const editURL = "{{ url_for('/edit')}}";
       var username = document.getElementById('username');
       var email = document.getElementById('email');
       var password = document.getElementById('password');
@@ -66,26 +67,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Place to add AJAX request for persisting changes
 
-      let data = {
-        "username" : username,
-        "email" : email,
-        "password" : password
-
-      }
-
-      fetch("/edit", {
-        "method" : "POST",
-        "headers": {"Content-Type": "application/json"},
-        "body": JSON.stringify(data),
-      })    .then(res => Response.body)
-      .then(body => console.log(body))
+      let data = new FormData()
+      data.append("newUsername",  username.value)
+      data.append("newEmail", email.value)
+      data.append("newPassword", password.value)
+      fetch("http://127.0.0.1:5000/edit", { // temporary solution - change in production !!!!!
+          "method": "POST",
+          "body": data,
+      }).then(console.log("Sent data"))
 
       console.log("Profile saved:", {
         username: username.value,
         email: email.value,
         password: password.value
       });
-      alert("Profile saved successfully!");
     }
 
     /* --------------------------

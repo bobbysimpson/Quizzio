@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for, redirect, flash
+from flask import Flask, request, render_template, url_for, redirect, flash, session
 import smtplib
 from email.mime.text import MIMEText
 import secrets
@@ -72,12 +72,20 @@ def forgot_password():
         # Redirect to login page after processing
         return redirect(url_for("login"))
 
-@app.route("/reset_password/<token>")
+@app.route("/reset_password/<token>", methods = ["GET", "POST"])
 def reset_password(token):
     email = reset_tokens.get(token)
     if not email:
         flash("Invalid or expired reset link.", "error")
         return redirect(url_for("login"))
+    else:
+        if request.method == "POST":
+            newPassword = request.form.get("password")
+            if len(newPassword) != 0:
+                response = supabase.table("users").update({newPassword}).eq("username", session["username"]).execute()
+                print("Password changed.")
+                return redirect(url_for("login"))
+
     return render_template("reset_password.html", email=email)
 
 @app.route("/login")

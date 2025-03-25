@@ -1,3 +1,9 @@
+let flashcardCount = 1;
+const maxFlashcards = 50;
+let quizTitle = "";
+let quizCategory = "";
+let flashcards = []; // store all created flashcards here
+
 document.addEventListener("DOMContentLoaded", function () {
     /* --------------------------
        Existing Form Navigation   <!-- Version 1.3-->
@@ -136,54 +142,84 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         function addFlashcard() {
-            if (flashcardCount > maxFlashcards) {
-                alert("You have reached the maximum number of flashcards.");
-                return;
+          if (flashcardCount > maxFlashcards) {
+              alert("You have reached the maximum number of flashcards.");
+              return;
+          }
+      
+          // Save previous flashcard before overwriting the container
+          const prevNameInput = document.querySelector("#flashcardInputName");
+          const prevContentInput = document.querySelector("#flashcardInputContent");
+          if (prevNameInput && prevContentInput) {
+              flashcards.push({
+                  name: prevNameInput.value,
+                  content: prevContentInput.value
+              });
+          }
+      
+          flashcardContainer.innerHTML = "";
+      
+          const flashcard = document.createElement("div");
+          flashcard.classList.add("flashcard");
+      
+          flashcard.innerHTML = `
+              <h3>Flashcard ${flashcardCount}</h3>
+              <div class="flashcard-input-container">
+                  <input type="text" placeholder="Enter flashcard name" id="flashcardInputName">
+              </div>
+              <div class="flashcard-input-container">
+                  <input type="text" placeholder="Enter flashcard content..." id="flashcardInputContent">
+              </div>
+              <div class="flashcard-buttons">
+                  <button id="nextFlashcardBtn">Next Flashcard</button>
+                  <button id="endQuizBtn">Save Quiz</button>
+                  <button id="BackBtn">Exit</button>
+              </div>
+          `;
+      
+          flashcardContainer.appendChild(flashcard);
+      
+          document.getElementById("nextFlashcardBtn").addEventListener("click", function () {
+              flashcardCount++;
+              addFlashcard();
+          });
+      
+          document.getElementById("endQuizBtn").addEventListener("click", function () {
+              // Save current flashcard
+              const name = document.getElementById("flashcardInputName").value;
+              const content = document.getElementById("flashcardInputContent").value;
+              flashcards.push({ name, content });
+      
+              // Submit to backend
+              submitQuiz();
+          });
+      
+          document.getElementById("BackBtn").addEventListener("click", function () {
+              window.location.href = "create.html";
+          });
+      }
+
+      function submitQuiz() {
+        const payload = {
+            title: quizTitle,
+            category: quizCategory,
+            flashcards: flashcards
+        };
+    
+        fetch("/api/quizzes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        }).then(res => {
+            if (res.ok) {
+                window.location.href = "/library"; // redirect to library page
+            } else {
+                alert("Failed to save quiz.");
             }
-
-            // Clear previous flashcard (if any) for single flashcard interface
-            flashcardContainer.innerHTML = "";
-
-            // Create a new flashcard element
-            const flashcard = document.createElement("div");
-            flashcard.classList.add("flashcard");
-
-            flashcard.innerHTML = `
-                <h3>Flashcard ${flashcardCount}</h3>
-                <div class="flashcard-input-container">
-                    <input type="text" placeholder="Enter flashcard name" id="flashcardInput">
-                </div>
-                <div class="flashcard-input-container">
-                    <input type="text" placeholder="Enter flashcard content..." id="flashcardInput">
-                </div>
-                <div class="flashcard-buttons">
-                    <button id="nextFlashcardBtn">Next Flashcard</button>
-                    <button id="endQuizBtn">Save Quiz</button>
-                    <button id="BackBtn">Exit</button>
-                </div>
-            `;
-
-            flashcardContainer.appendChild(flashcard);
-
-            // Next Flashcard button
-            document.getElementById("nextFlashcardBtn").addEventListener("click", function () {
-                if (flashcardCount < maxFlashcards) {
-                    flashcardCount++;
-                    addFlashcard();
-                } else {
-                    alert("You have reached the maximum number of flashcards.");
-                }
-            });
-
-            // Save Quiz button - redirects to library.html
-            document.getElementById("endQuizBtn").addEventListener("click", function () {
-                window.location.href = "library.html";
-            });
-
-            // Exit button - returns to create.html
-            document.getElementById("BackBtn").addEventListener("click", function () {
-                window.location.href = "create.html";
-            });
-        }
+        });
+    }
+    
     }
 });

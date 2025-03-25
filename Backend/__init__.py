@@ -28,10 +28,12 @@ def create_app():
     from .views import views
     from .auth import auth
     from .editprofile import editprofile
+    from .forgotpass import forgotpass
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(editprofile, url_prefix='/')
+    app.register_blueprint(forgotpass, url_prefix='/')
     
     # Import the User model to support user loading
     from .models import User

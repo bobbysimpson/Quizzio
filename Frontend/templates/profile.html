@@ -42,13 +42,12 @@
        {% endif %}
      {% endwith %}
     <section class="profile-box">
-      
       <!-- Profile Picture -->
       <div class="profile-picture-container">
         <label for="profileImageInput">
-          <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic-large" id="profilePic">
+          <img src="{{ url_for('static', filename='default-profile.jpg') }}" alt="Profile Picture" class="profile-pic-large" id="profilePic">
           <div class="upload-icon">
-            <img src="camera-icon.png" alt="Edit Profile Picture">
+            <img src="{{ url_for('static', filename='edit-icon.png') }}" alt="Edit Profile Picture" class="edit-icon">
           </div>
         </label>
         <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
@@ -60,17 +59,17 @@
         <div class="profile-item">
           <label for="username">Username</label>
           <input type="text" id="username" placeholder="Enter username" disabled>
-          <img src="edit-icon.png" alt="Edit" class="edit-icon" onclick="enableEdit('username')">
+          <img src="{{ url_for('static', filename='edit-icon.png') }}" alt="Edit" class="edit-icon" onclick="enableEdit('username')">
         </div>
         <div class="profile-item">
           <label for="email">Email</label>
           <input type="email" id="email" placeholder="Enter email" disabled>
-          <img src="edit-icon.png" alt="Edit" class="edit-icon" onclick="enableEdit('email')">
+          <img src="{{ url_for('static', filename='edit-icon.png') }}" alt="Edit" class="edit-icon" onclick="enableEdit('email')">
         </div>
         <div class="profile-item">
           <label for="password">Password</label>
           <input type="password" id="password" placeholder="Enter password" disabled>
-          <img src="edit-icon.png" alt="Edit" class="edit-icon" onclick="enableEdit('password')">
+          <img src="{{ url_for('static', filename='edit-icon.png') }}" alt="Edit" class="edit-icon" onclick="enableEdit('password')">
         </div>
       </div>
       
@@ -81,6 +80,6 @@
       </div>
     </section>
   </main>
-  <script src="script.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

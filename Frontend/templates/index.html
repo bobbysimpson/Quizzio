@@ -22,7 +22,7 @@
                <a href="profile" class="profile-link">Profile</a>
                <a href="logout" class="logout-link">Logout</a>
            </div>
-           <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic">
+           <img src="{{ url_for('static', filename='default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">
        </div>
     </header>
 

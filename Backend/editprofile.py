@@ -34,12 +34,6 @@ def edit():
                 updateData['email'] = newEmail
         if len(newPassword) != 0:
             updateData['password'] = generate_password_hash(newPassword, method='pbkdf2:sha256')
-        
-        print(updateData)
-        print(newUsername)
-        print(newEmail)
-        print(newPassword)
-        print(session["username"])
         response = supabase.table("users").update(updateData).eq("username", session["username"]).execute()
        # print(response.data)
         if not response.data or len(response.data) == 0:
@@ -48,6 +42,8 @@ def edit():
         else:
          #   flash("User data saved successfully", "success") # need to flash a message here
               print("Did work")
+              if len(newUsername) != 0:
+                  session["username"] = newUsername
     return render_template('profile.html')
 
     

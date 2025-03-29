@@ -148,8 +148,8 @@ document.addEventListener("DOMContentLoaded", function () {
           }
       
           // Save previous flashcard before overwriting the container
-          const prevNameInput = document.querySelector("#flashcardInputName");
-          const prevContentInput = document.querySelector("#flashcardInputContent");
+          const prevNameInput = document.querySelector("#flashcardInputFront");
+          const prevContentInput = document.querySelector("#flashcardInputBack");
           if (prevNameInput && prevContentInput) {
               flashcards.push({
                   name: prevNameInput.value,
@@ -165,10 +165,10 @@ document.addEventListener("DOMContentLoaded", function () {
           flashcard.innerHTML = `
               <h3>Flashcard ${flashcardCount}</h3>
               <div class="flashcard-input-container">
-                  <input type="text" placeholder="Enter flashcard name" id="flashcardInputName">
+                  <input type="text" placeholder="Enter front content" id="flashcardInputFront">
               </div>
               <div class="flashcard-input-container">
-                  <input type="text" placeholder="Enter flashcard content..." id="flashcardInputContent">
+                  <input type="text" placeholder="Enter back content..." id="flashcardInputBack">
               </div>
               <div class="flashcard-buttons">
                   <button id="nextFlashcardBtn">Next Flashcard</button>
@@ -186,8 +186,8 @@ document.addEventListener("DOMContentLoaded", function () {
       
           document.getElementById("endQuizBtn").addEventListener("click", function () {
               // Save current flashcard
-              const name = document.getElementById("flashcardInputName").value;
-              const content = document.getElementById("flashcardInputContent").value;
+              const name = document.getElementById("flashcardInputFront").value;
+              const content = document.getElementById("flashcardInputBack").value;
               flashcards.push({ name, content });
       
               // Submit to backend

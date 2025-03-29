@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         createQuizBtn.addEventListener("click", function () {
             quizTitle = document.getElementById("quizTitle").value;
-            const quizCategory = document.getElementById("quizCategory").value;
+            quizCategory = document.getElementById("quizCategory").value; // got rid of const here as category wasnt getting thru to backend
 
             if (!quizTitle || !quizCategory) {
                 alert("Please enter a quiz name and select a category.");

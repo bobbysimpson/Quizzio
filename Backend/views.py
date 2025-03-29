@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 
 views = Blueprint('views', __name__)
 
@@ -56,13 +56,28 @@ def save_quiz():
     category = data.get('category')
     flashcards = data.get('flashcards', [])
 
-    try:
-        # Just print the data for now (until Supabase integration is added)
-        print("QUIZ TITLE:", title)
-        print("CATEGORY:", category)
-        print("FLASHCARDS:", flashcards)
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    print("CATEGORY RECEIVED:", category)
 
-        return jsonify({"message": "Received successfully"}), 201
+    try:
+        inserts = []
+        for card in flashcards:
+            inserts.append({
+                "user_id": current_user.id,
+                "set_title": title,
+                "category": category,
+                "front_text": card["name"],
+                "back_text": card["content"]
+            })
+
+        response = supabase.table("flashcards").insert(inserts).execute()
+
+        if response.data is None:
+            print("Supabase insert failed:", response)
+            return jsonify({"error": "Database insert failed"}), 500
+
+        return jsonify({"message": "Flashcards saved successfully"}), 201
+    
     except Exception as e:
-        print("Error saving quiz:", str(e))
-        return jsonify({"error": "Something went wrong"}), 500
+        print("Error saving to Supabase:", str(e))
+        return jsonify({"error": "Server error"}), 500

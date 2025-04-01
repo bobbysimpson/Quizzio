@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, url_for, redirect, flash, ses
 import smtplib
 from email.mime.text import MIMEText
 import secrets
+from werkzeug.security import generate_password_hash
 from supabase import create_client, Client
 import os
 
@@ -23,7 +24,7 @@ EMAIL_ADDRESS = 'quizzioreset@gmail.com'  # Replace with actual sender email
 EMAIL_PASSWORD = 'zbsj yrpo qdnk wwvn'      # Replace with actual app password
 
 def send_reset_email(recipient_email, token):
-    reset_url = url_for('reset_password', token=token, _external=True)
+    reset_url = url_for('forgotpass.reset_password', token=token, _external=True)
     subject = "Password Reset Request"
     body = f"Click the following link to reset your password: {reset_url}"
     
@@ -37,6 +38,7 @@ def send_reset_email(recipient_email, token):
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             server.sendmail(EMAIL_ADDRESS, recipient_email, msg.as_string())
+        print("IT SENT")
         return True
     except Exception as e:
         print(f"Error sending email: {e}")
@@ -58,7 +60,7 @@ def forgot_password():
         # Check if any data was returned; if not, flash "Invalid email."
         if not response.data or len(response.data) == 0:
             flash("Invalid email.", "error")
-            return redirect(url_for("forgot_password"))
+            return redirect(url_for("forgotpass.forgot_password"))
         
         # Email exists: generate a unique token for password reset and store it
         token = secrets.token_urlsafe(16)
@@ -71,22 +73,29 @@ def forgot_password():
             flash("Failed to send password reset email. Please try again later.", "error")
 
         # Redirect to login page after processing
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
 
 @forgotpass.route("/reset_password/<token>", methods = ["GET", "POST"])
 def reset_password(token):
     supabase = current_app.config["SUPABASE_CLIENT"]
     email = reset_tokens.get(token)
+    print(email)
     if not email:
         flash("Invalid or expired reset link.", "error")
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
     else:
         if request.method == "POST":
                 newPassword = request.form.get("password")
                 if len(newPassword) != 0:
-                    response = supabase.table("users").update({newPassword}).eq("email", email).execute() # hacky way of making sure it affects the right account
-                    print("Password changed.") # add message flash here
-                    return redirect(url_for("login"))
+                    newPassword = generate_password_hash(newPassword)
+                    updateData = {"password_hash" : newPassword}
+                    response = supabase.table("users").update(updateData).eq("email", email).execute() # hacky way of making sure it affects the right account
+                    print(response)
+                    if not response or len(response.data) == 0:
+                        print("Something didn't work")
+                    else:
+                        print("Password changed.") # add message flash here
+                    return redirect(url_for("auth.login"))
     return render_template("reset_pass.html", email=email)
 
 @forgotpass.route("/login")

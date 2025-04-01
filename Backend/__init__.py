@@ -28,13 +28,12 @@ def create_app():
     from .auth import auth
     from .editprofile import editprofile
     from .forgotpass import forgotpass
-    from .library import library_bp  # NEW: import the library blueprint
+    
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(editprofile, url_prefix='/')
     app.register_blueprint(forgotpass, url_prefix='/')
-    app.register_blueprint(library_bp, url_prefix='/')  # NEW: register library blueprint
     
     # Import the User model to support user loading
     from .models import User

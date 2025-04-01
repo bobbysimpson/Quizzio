@@ -48,7 +48,7 @@ def other():
 @login_required
 def library():
     supabase = current_app.config["SUPABASE_CLIENT"]
-    response = supabase.table("quizzes").select("*").eq("user_id", current_user.id).execute()
+    response = supabase.table("flashcard_sets").select("*").eq("user_id", current_user.id).execute()
     quizzes = response.data if response.data else []
     return render_template("library.html", quizzes=quizzes)
 
@@ -64,24 +64,50 @@ def save_quiz():
     print("CATEGORY RECEIVED:", category)
 
     try:
+        # Step 1: Create a new flashcard set
+        set_response = supabase.table("flashcard_sets").insert({
+            "user_id": current_user.id,
+            "title": title,
+            "category": category
+        }).execute()
+
+        set_id = set_response.data[0]["set_id"]
+
+        # Step 2: Insert flashcards with that set_id
         inserts = []
         for card in flashcards:
             inserts.append({
                 "user_id": current_user.id,
-                "set_title": title,
-                "category": category,
+                "set_id": set_id,
                 "front_text": card["name"],
                 "back_text": card["content"]
             })
 
-        response = supabase.table("flashcards").insert(inserts).execute()
+        flashcard_response = supabase.table("flashcards").insert(inserts).execute()
 
-        if response.data is None:
-            print("Supabase insert failed:", response)
+        if flashcard_response.data is None:
+            print("Supabase insert failed:", flashcard_response)
             return jsonify({"error": "Database insert failed"}), 500
 
-        return jsonify({"message": "Flashcards saved successfully"}), 201
+        return jsonify({"message": "Flashcard set saved successfully"}), 201
     
     except Exception as e:
         print("Error saving to Supabase:", str(e))
         return jsonify({"error": "Server error"}), 500
+    
+@views.route('/api/sets', methods=['GET'])
+@login_required
+def get_flashcard_sets():
+    supabase = current_app.config["SUPABASE_CLIENT"]
+
+    try:
+        response = supabase.table("flashcard_sets") \
+            .select("id", "title", "category", "created_at") \
+            .eq("user_id", current_user.id) \
+            .execute()
+
+        return jsonify(response.data), 200
+
+    except Exception as e:
+        print("Error fetching sets:", str(e))
+        return jsonify({"error": "Could not fetch sets"}), 500

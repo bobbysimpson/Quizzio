@@ -10,6 +10,7 @@ editprofile = Blueprint('editprofile', __name__)
 
 @editprofile.route('/profile')
 def profile():
+    session['_flashes'].clear() # note this breaks all flashed messages on this page, need to fix this later
     supabase = current_app.config["SUPABASE_CLIENT"]
     response = supabase.table("users").select("email").eq("username", session["username"]).execute()
     email = response.data[0]
@@ -29,7 +30,7 @@ def edit():
         if len(newUsername) != 0:
             response = supabase.table("users").select("*").eq("username", newUsername).execute()
             if len(response.data) != 0:
-                flash("Error: Username already in use.")
+                flash("Error: Username already in use.", "error")
             else:
                 updateData['username'] = newUsername
         if len(newEmail) != 0:
@@ -43,13 +44,13 @@ def edit():
         response = supabase.table("users").update(updateData).eq("username", session["username"]).execute()
        # print(response.data)
         if not response.data or len(response.data) == 0:
-        #    flash("Error: Nothing happened", "error")
+            flash("Error: Nothing happened", "error")
             print("Didn't work")
         else:
-         #   flash("User data saved successfully", "success") # need to flash a message here
-              print("Did work")
-              if len(newUsername) != 0:
-                  session["username"] = newUsername
+            flash("User data saved successfully", "success") # need to flash a message here
+            print("Did work")
+            if len(newUsername) != 0:
+                session["username"] = newUsername
     response = supabase.table("users").select("email").eq("username", session["username"]).execute()
     email = response.data[0]
     email = email.get("email")

@@ -113,6 +113,7 @@ def get_flashcard_sets():
         return jsonify({"error": "Could not fetch sets"}), 500
     
 @views.route('/quiz_detail/<int:quiz_id>')
+@login_required
 def quiz_detail(quiz_id):
     supabase = current_app.config["SUPABASE_CLIENT"]
     response = supabase.table("flashcard_sets").select("*").eq("id", quiz_id).execute()

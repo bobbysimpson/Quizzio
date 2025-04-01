@@ -45,8 +45,12 @@ def other():
     return render_template("Other.html")
 
 @views.route('/library')
+@login_required
 def library():
-    return render_template("library.html")
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    response = supabase.table("quizzes").select("*").eq("user_id", current_user.id).execute()
+    quizzes = response.data if response.data else []
+    return render_template("library.html", quizzes=quizzes)
 
 @views.route('/api/quizzes', methods=['POST'])
 @login_required

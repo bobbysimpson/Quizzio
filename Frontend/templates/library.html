@@ -16,7 +16,7 @@
         <a href="profile.html" class="profile-link">Profile</a>
         <a href="{{ url_for('auth.login') }}" class="logout-link">Logout</a>
       </div>
-      <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic">
+      <img src="{{ url_for('static', filename='default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">
     </div>
   </header>
 
@@ -27,11 +27,11 @@
         <div class="quizzes-container">
           {% for quiz in quizzes %}
             <!-- Adjust the URL for quiz details if necessary -->
-            <a href="{{ url_for('views.quiz_detail', quiz_id=quiz['id']) }}" class="subject-link">
-              <div class="card">
-                <h3>{{ quiz.title }}</h3>
-              </div>
-            </a>
+            <a href="{{ url_for('views.quiz_detail', quiz_id=quiz['set_id']) }}" class="subject-link"></a>
+                <div class="card">
+                  <h3>{{ quiz.title }}</h3>
+                </div>
+              </a>
           {% endfor %}
         </div>
       {% else %}
@@ -52,9 +52,10 @@
       <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
       <span>Create</span>
     </a>
-    <a href="{{ url_for('library.library') }}" class="nav-item active">
-      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
-      <span>Library</span>
+    <a href="{{ url_for('views.library') }}" class="nav-item active">
+        <img src="https://img.icons8.com/ios-glyphs/20/ffffff/books.png" alt="Library">
+        <span>Library</span>
+      </a>
     </a>
   </nav>
 

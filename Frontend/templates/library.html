@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quizzio - Library</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* Additional styles for quiz actions */
+    .quiz-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      position: relative;
+      top: -50px; /* Raise the icons slightly */
+    }
+    .quiz-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .quiz-actions img {
+      width: 25px;
+      height: 25px;
+    }
+  </style>
 </head>
 <body>
 
@@ -20,18 +39,31 @@
     </div>
   </header>
 
-  <main>
+  <main style="overflow-y: auto; height: calc(100vh - 140px);">
     <section class="library-content">
       <h2>Your Library</h2>
       {% if quizzes and quizzes|length > 0 %}
         <div class="quizzes-container">
           {% for quiz in quizzes %}
-            <!-- Adjust the URL for quiz details if necessary -->
-            <a href="{{ url_for('views.quiz_detail', quiz_id=quiz['set_id']) }}" class="subject-link"></a>
-                <div class="card">
-                  <h3>{{ quiz.title }}</h3>
+            <a href="{{ url_for('views.quiz_detail', quiz_id=quiz['set_id']) }}" class="subject-link">
+              <div class="card">
+                <h3>{{ quiz.title }}</h3>
+                <p>User ID: {{ quiz.user_id }}</p>
+                <p>Category: {{ quiz.category }}</p>
+                <div class="quiz-actions">
+                  <!-- Bookmark button using yellow icon -->
+                  <button class="bookmark-button">
+                    <img src="https://img.icons8.com/ios-glyphs/20/f0c808/bookmark-ribbon.png" alt="Bookmark">
+                  </button>
+                  <!-- Trash can button shown only if the quiz was created by the logged-in user -->
+                  {% if quiz.user_id == current_user.id %}
+                    <button class="delete-button">
+                      <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
+                    </button>
+                  {% endif %}
                 </div>
-              </a>
+              </div>
+            </a>
           {% endfor %}
         </div>
       {% else %}
@@ -53,9 +85,8 @@
       <span>Create</span>
     </a>
     <a href="{{ url_for('views.library') }}" class="nav-item active">
-        <img src="https://img.icons8.com/ios-glyphs/20/ffffff/books.png" alt="Library">
-        <span>Library</span>
-      </a>
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/books.png" alt="Library">
+      <span>Library</span>
     </a>
   </nav>
 

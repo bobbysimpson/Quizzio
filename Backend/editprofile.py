@@ -12,7 +12,8 @@ editprofile = Blueprint('editprofile', __name__)
 def profile():
     supabase = current_app.config["SUPABASE_CLIENT"]
     response = supabase.table("users").select("email").eq("username", session["username"]).execute()
-    email = response[0]
+    email = response.data[0]
+    email = email.get("email")
     return render_template('profile.html', username=session["username"], email=email)
 
 @editprofile.route('/edit', methods = ['GET', 'POST'])
@@ -50,6 +51,7 @@ def edit():
               if len(newUsername) != 0:
                   session["username"] = newUsername
     response = supabase.table("users").select("email").eq("username", session["username"]).execute()
-    email = response[0]
+    email = response.data[0]
+    email = email.get("email")
     return render_template('profile.html', username=session["username"], email=email)
     

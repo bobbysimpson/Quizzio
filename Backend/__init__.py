@@ -23,17 +23,18 @@ def create_app():
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
     app.config["SUPABASE_CLIENT"] = supabase
 
-   
-     # Register blueprints for your views and authentication routes
+    # Register blueprints for your views and authentication routes
     from .views import views
     from .auth import auth
     from .editprofile import editprofile
     from .forgotpass import forgotpass
+    from .library import library_bp  # NEW: import the library blueprint
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(editprofile, url_prefix='/')
     app.register_blueprint(forgotpass, url_prefix='/')
+    app.register_blueprint(library_bp, url_prefix='/')  # NEW: register library blueprint
     
     # Import the User model to support user loading
     from .models import User
@@ -48,12 +49,9 @@ def create_app():
         supabase = app.config["SUPABASE_CLIENT"]
         # Query the 'users' table by user_id
         response = supabase.table("users").select("*").eq("user_id", user_id).execute()
-        # Check if data exists in the response; if not, return None.
         if not response.data:
             return None
         user_data = response.data[0]
         return User.from_dict(user_data)
     
-    
     return app
-

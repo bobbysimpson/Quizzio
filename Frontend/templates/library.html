@@ -1,49 +1,62 @@
-<!DOCTYPE html> <!-- This is the library page created by Rahul Mehra displays users saved quizzes -->
-<html lang="en"> <!-- Version 1.3-->
-<head> <!-- PLEASE DO NOT EDIT THIS WITHOUT LETTING ME KNOW -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quizzio - Library</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quizzio - Library</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <header>
-        <h1>Quizzio</h1>
-        <div class="user-box">
-            <div class="user-info">
-                <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
-                <a href="profile.html" class="profile-link">Profile</a> <!-- link needs to be fixed here but awaitng completion/integration of profile section-->
-                <a href="{{ url_for('auth.login') }}" class="logout-link">Logout</a>
-            </div>
-            <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic">
+  <header>
+    <h1>Quizzio</h1>
+    <div class="user-box">
+      <div class="user-info">
+        <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
+        <a href="profile.html" class="profile-link">Profile</a>
+        <a href="{{ url_for('auth.login') }}" class="logout-link">Logout</a>
+      </div>
+      <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic">
+    </div>
+  </header>
+
+  <main>
+    <section class="library-content">
+      <h2>Your Library</h2>
+      {% if quizzes and quizzes|length > 0 %}
+        <div class="quizzes-container">
+          {% for quiz in quizzes %}
+            <!-- Adjust the URL for quiz details if necessary -->
+            <a href="{{ url_for('views.quiz_detail', quiz_id=quiz['id']) }}" class="subject-link">
+              <div class="card">
+                <h3>{{ quiz.title }}</h3>
+              </div>
+            </a>
+          {% endfor %}
         </div>
-    </header>
+      {% else %}
+        <div class="empty-library">
+          <p>You have no saved quizzes.</p>
+          <a href="{{ url_for('views.index') }}" class="browse-link">Click here to browse or search for quizzes.</a>
+        </div>
+      {% endif %}
+    </section>
+  </main>
 
-    <main>
-        <section class="library-content">
-            <h2>Your Library</h2>
-            <div class="empty-library">
-                <p>You have no saved quizzes.</p>
-                <a href="{{ url_for('views.index') }}" class="browse-link">Click here to browse or search for quizzes.</a>
-            </div>
-        </section>
-    </main>
-
-    <nav class="bottom-nav">
-        <a href="{{ url_for('views.index') }}" class="nav-item">
-            <img src="https://img.icons8.com/ios-glyphs/20/ffffff/home.png" alt="Home">
-            <span>Home</span>
-        </a>
-        <a href="{{ url_for('views.create') }}" class="nav-item">
-            <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
-            <span>Create</span>
-        </a>
-        <a href="{{ url_for('views.library') }}" class="nav-item active">
-            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
-            <span>Library</span>
-        </a>
-    </nav>
+  <nav class="bottom-nav">
+    <a href="{{ url_for('views.index') }}" class="nav-item">
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/home.png" alt="Home">
+      <span>Home</span>
+    </a>
+    <a href="{{ url_for('views.create') }}" class="nav-item">
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
+      <span>Create</span>
+    </a>
+    <a href="{{ url_for('library.library') }}" class="nav-item active">
+      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
+      <span>Library</span>
+    </a>
+  </nav>
 
 </body>
 </html>

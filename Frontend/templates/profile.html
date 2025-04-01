@@ -23,8 +23,15 @@
     }
     .success { color: green; }
     .error { color: red; }
+    /* Container for action buttons to align them side by side on the right */
+    .action-buttons-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: -10px;
+      margin-top: 20px;
+    }
   </style>
-
 </head>
 <body>
   <header>
@@ -42,6 +49,7 @@
        {% endif %}
      {% endwith %}
     <section class="profile-box">
+      
       <!-- Profile Picture -->
       <div class="profile-picture-container">
         <label for="profileImageInput">
@@ -58,12 +66,12 @@
       <div class="profile-info">
         <div class="profile-item">
           <label for="username">Username</label>
-          <input type="text" id="username" placeholder={{username}} disabled>
+          <input type="text" id="username" placeholder="{{ username }}" disabled>
           <img src="{{ url_for('static', filename='edit-icon.png') }}" alt="Edit" class="edit-icon" onclick="enableEdit('username')">
         </div>
         <div class="profile-item">
           <label for="email">Email</label>
-          <input type="email" id="email" placeholder={{email}} disabled>
+          <input type="email" id="email" placeholder="{{ email }}" disabled>
           <img src="{{ url_for('static', filename='edit-icon.png') }}" alt="Edit" class="edit-icon" onclick="enableEdit('email')">
         </div>
         <div class="profile-item">
@@ -74,9 +82,11 @@
       </div>
       
       <!-- Action Buttons -->
-      <div class="action-buttons">
-        <button id="saveButton" onclick="saveProfile()">Save</button>
+      <div class="action-buttons-container">
+        <!-- "Back" button remains exactly as originally styled -->
         <a href="{{ url_for('views.index') }}" class="back-button">Back</a>
+        <!-- "Save" button now uses the same class so its styling is identical -->
+        <button id="saveButton" onclick="saveProfile()" class="back-button" style="cursor: pointer;">Save</button>
       </div>
     </section>
   </main>

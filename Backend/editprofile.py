@@ -10,7 +10,10 @@ editprofile = Blueprint('editprofile', __name__)
 
 @editprofile.route('/profile')
 def profile():
-    return render_template('profile.html')
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    response = supabase.table("users").select("email").eq("username", session["username"]).execute()
+    email = response[0]
+    return render_template('profile.html', username=session["username"], email=email)
 
 @editprofile.route('/edit', methods = ['GET', 'POST'])
 def edit():
@@ -19,7 +22,9 @@ def edit():
         newUsername = request.form['newUsername']
         newEmail = request.form['newEmail']
         newPassword = request.form['newPassword']
+
         updateData = {}
+# checks for each possible field to update so that blank values don't accidentally get passed over. Can probably be consolidated into simpler statements than this.
         if len(newUsername) != 0:
             response = supabase.table("users").select("*").eq("username", newUsername).execute()
             if len(response.data) != 0:
@@ -33,7 +38,7 @@ def edit():
             else:
                 updateData['email'] = newEmail
         if len(newPassword) != 0:
-            updateData['password'] = generate_password_hash(newPassword, method='pbkdf2:sha256')
+            updateData['password'] = generate_password_hash(newPassword)
         response = supabase.table("users").update(updateData).eq("username", session["username"]).execute()
        # print(response.data)
         if not response.data or len(response.data) == 0:
@@ -44,6 +49,7 @@ def edit():
               print("Did work")
               if len(newUsername) != 0:
                   session["username"] = newUsername
-    return render_template('profile.html')
-
+    response = supabase.table("users").select("email").eq("username", session["username"]).execute()
+    email = response[0]
+    return render_template('profile.html', username=session["username"], email=email)
     

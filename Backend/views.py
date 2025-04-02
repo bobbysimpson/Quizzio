@@ -48,7 +48,11 @@ def other():
 @login_required
 def library():
     supabase = current_app.config["SUPABASE_CLIENT"]
-    response = supabase.table("flashcard_sets").select("*").eq("user_id", current_user.id).execute()
+    response = supabase.table("flashcard_sets") \
+        .select("set_id, title, category, created_at, user_id, users(username)") \
+        .eq("user_id", current_user.id) \
+        .execute()
+    
     quizzes = response.data if response.data else []
     return render_template("library.html", quizzes=quizzes)
 
@@ -102,7 +106,7 @@ def get_flashcard_sets():
 
     try:
         response = supabase.table("flashcard_sets") \
-            .select("id", "title", "category", "created_at") \
+            .select("set_id", "title", "category", "created_at", "users(username)") \
             .eq("user_id", current_user.id) \
             .execute()
 
@@ -116,6 +120,6 @@ def get_flashcard_sets():
 @login_required
 def quiz_detail(quiz_id):
     supabase = current_app.config["SUPABASE_CLIENT"]
-    response = supabase.table("flashcard_sets").select("*").eq("id", quiz_id).execute()
+    response = supabase.table("flashcard_sets").select("*").eq("set_id", quiz_id).execute()
     quiz = response.data[0] if response.data else None
     return render_template("quiz_detail.html", quiz=quiz)

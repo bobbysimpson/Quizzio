@@ -48,7 +48,7 @@
             <a href="{{ url_for('views.quiz_detail', quiz_id=quiz['set_id']) }}" class="subject-link">
               <div class="card">
                 <h3>{{ quiz.title }}</h3>
-                <p>User ID: {{ quiz.user_id }}</p>
+                <p>Author: {{ quiz.users.username }}</p>
                 <p>Category: {{ quiz.category }}</p>
                 <div class="quiz-actions">
                   <!-- Bookmark button using yellow icon -->

@@ -22,27 +22,66 @@ def create():
 
 @views.route('/english')
 def english():
-    return render_template("English.html")
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    # Query flashcard_sets where category contains "English"
+    response = supabase.table("flashcard_sets")\
+        .select("set_id, title, category, created_at, user_id, users(username)")\
+        .ilike("category", "%English%")\
+        .execute()
+    quizzes = response.data if response.data else []
+    return render_template("English.html", quizzes=quizzes)
 
 @views.route('/language')
 def language():
-    return render_template("Language.html")
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    # Filter for quizzes whose category includes "Language" (case-insensitive)
+    response = supabase.table("flashcard_sets")\
+        .select("set_id, title, category, created_at, user_id, users(username)")\
+        .ilike("category", "%Language%")\
+        .execute()
+    quizzes = response.data if response.data else []
+    return render_template("Language.html", quizzes=quizzes)
 
 @views.route('/maths')
 def maths():
-    return render_template("Maths.html")
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    response = supabase.table("flashcard_sets")\
+        .select("set_id, title, category, created_at, user_id, users(username)")\
+        .ilike("category", "%Math%")\
+        .execute()
+    quizzes = response.data if response.data else []
+    return render_template("Maths.html", quizzes=quizzes)
 
 @views.route('/science')
 def science():
-    return render_template("Science.html")
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    # Query flashcard_sets for rows where the category contains "Science" (case-insensitive)
+    response = supabase.table("flashcard_sets")\
+        .select("set_id, title, category, created_at, user_id, users(username)")\
+        .ilike("category", "%Science%")\
+        .execute()
+    quizzes = response.data if response.data else []
+    return render_template("Science.html", quizzes=quizzes)
 
 @views.route('/computing')
 def computing():
-    return render_template("Computing.html")
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    response = supabase.table("flashcard_sets")\
+        .select("set_id, title, category, created_at, user_id, users(username)")\
+        .ilike("category", "%Computing%")\
+        .execute()
+    quizzes = response.data if response.data else []
+    return render_template("Computing.html", quizzes=quizzes)
 
 @views.route('/other')
 def other():
-    return render_template("Other.html")
+    supabase = current_app.config["SUPABASE_CLIENT"]
+    response = supabase.table("flashcard_sets")\
+        .select("set_id, title, category, created_at, user_id, users(username)")\
+        .ilike("category", "%Other%")\
+        .execute()
+    quizzes = response.data if response.data else []
+    return render_template("Other.html", quizzes=quizzes)
 
 @views.route('/library')
 @login_required

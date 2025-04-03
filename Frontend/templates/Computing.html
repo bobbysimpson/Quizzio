@@ -1,32 +1,103 @@
-<!DOCTYPE html> <!-- Version 1.3-->
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quizzio - Computing</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* Only the main section scrolls */
+    main {
+      overflow-y: auto;
+      height: calc(100vh - 140px);
+    }
+    /* Back button positioned at the top left */
+    .back-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #f0c808;
+      color: black;
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      z-index: 10;
+    }
+    /* Add top margin so the back button doesn't overlap content */
+    .quizzes-container {
+      margin-top: 50px;
+    }
+    /* Quiz actions: same as in other pages */
+    .quiz-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      position: relative;
+      top: -50px; /* Adjust to vertically center icons on the card's right */
+    }
+    .quiz-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .quiz-actions img {
+      width: 25px;
+      height: 25px;
+    }
+  </style>
 </head>
 <body>
   <header>
     <h1>Quizzio</h1>
     <div class="user-box">
       <div class="user-info">
-        <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
+        <span class="username">
+          {{ current_user.username if current_user.is_authenticated else "Guest" }}
+        </span>
         <a href="profile.html" class="profile-link">Profile</a>
-        <a href="login.html" class="logout-link">Logout</a>
+        <a href="{{ url_for('auth.login') }}" class="logout-link">Logout</a>
       </div>
-      <img src="default-profile.jpg" alt="Profile Picture" class="profile-pic">
+      <img src="{{ url_for('static', filename='default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">
     </div>
   </header>
 
   <main>
-    <div class="page-content">
-      <!-- Page Title -->
+    <!-- Back button at the top left -->
+    <a href="{{ url_for('views.index') }}" class="back-button">Back</a>
+    <section class="library-content">
       <h2 class="page-title">Computing Quizzes</h2>
-      <!-- Top Right Back Button -->
-      <a href="{{ url_for('views.index') }}" class="back-button top-right-back">Back</a>
-      <!-- Blank midsection content goes here -->
-    </div>
+      <div class="quizzes-container">
+        {% if quizzes and quizzes|length > 0 %}
+          {% for quiz in quizzes %}
+            <div class="subject-link">
+              <div class="card">
+                <h3>{{ quiz.title }}</h3>
+                <p>Author: {{ quiz.users.username }}</p>
+                <p>Category: {{ quiz.category }}</p>
+                <div class="quiz-actions">
+                  <!-- Bookmark button (always visible) -->
+                  <button class="bookmark-button">
+                    <img src="https://img.icons8.com/ios-glyphs/20/f0c808/bookmark-ribbon.png" alt="Bookmark">
+                  </button>
+                  <!-- Trash can button (only if logged-in user is the author) -->
+                  {% if quiz.user_id == current_user.id %}
+                    <button class="delete-button">
+                      <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-library">
+            <p>No Computing quizzes found.</p>
+            <a href="{{ url_for('views.index') }}" class="browse-link">Click here to browse or search for quizzes.</a>
+          </div>
+        {% endif %}
+      </div>
+    </section>
   </main>
 
   <nav class="bottom-nav">
@@ -39,7 +110,7 @@
       <span>Create</span>
     </a>
     <a href="{{ url_for('views.library') }}" class="nav-item">
-      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/books.png" alt="Library">
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/books.png" alt="Library">
       <span>Library</span>
     </a>
   </nav>

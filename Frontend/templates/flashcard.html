@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quizzio - Flashcards</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Include Supabase JS library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <!-- Inline styles for the flashcard layout and flip animation -->
+  <style>
+    /* Full midsection container for flashcards */
+    .flashcard-container {
+      width: 90%;
+      height: 60vh;
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Flashcard itself takes up the full container */
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      background-color: #2b2b41;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    /* 3D Flip container */
+    .flip-card-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    /* Front and back face styling */
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      font-size: 1.5em;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+    /* Position the flashcard number at the top left */
+    .flashcard-number {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 1.2em;
+      color: white;
+      z-index: 2;
+    }
+    /* Styling for the navigation buttons */
+    .flashcard-buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    .flashcard-buttons button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #f0c808;
+      border: none;
+      border-radius: 5px;
+      color: black;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .flashcard-buttons button:hover {
+      background-color: #d9a600;
+    }
+    .flashcard-buttons button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with logo, search bar, and user box -->
+  <header>
+    <h1>Quizzio</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Search sets, flashcards, questions..." />
+      <button>
+        <img src="https://img.icons8.com/ios-glyphs/20/ffffff/search--v1.png" alt="Search">
+      </button>
+    </div>
+    <div class="user-box">
+      <div class="user-info">
+        <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
+        <a href="profile" class="profile-link">Profile</a>
+        <a href="logout" class="logout-link">Logout</a>
+      </div>
+      <img src="{{ url_for('static', filename='default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">
+    </div>
+  </header>
+
+  <!-- Main Flashcard Content -->
+  <main>
+    <!-- Display quiz title dynamically -->
+    <h2 id="quiz-title">Quiz Title</h2>
+    <div class="flashcard-container">
+      <div class="flashcard flip-card" id="flashcard">
+        <div class="flashcard-number" id="flashcard-number">Flashcard 1</div>
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <p id="flashcard-content">Loading...</p>
+          </div>
+          <div class="flip-card-back">
+            <p id="flashcard-content-back">Loading...</p>
+          </div>
+        </div>
+      </div>
+      <!-- Navigation Buttons -->
+      <div class="flashcard-buttons">
+        <button id="back-button" onclick="prevCard()">Back</button>
+        <button id="flip-button" onclick="flipCard()">Flip</button>
+        <button id="next-button" onclick="nextCard()">Next</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="{{ url_for('views.index') }}" class="nav-item">
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/home.png" alt="Home">
+      <span>Home</span>
+    </a>
+    <a href="{{ url_for('views.create') }}" class="nav-item">
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/add.png" alt="Create">
+      <span>Create</span>
+    </a>
+    <a href="{{ url_for('views.library') }}" class="nav-item">
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/books.png" alt="Library">
+      <span>Library</span>
+    </a>
+  </nav>
+
+  <!-- JavaScript: Supabase Setup and Flashcard Interaction -->
+  <script>
+    // Initialize Supabase client with your credentials
+    const SUPABASE_URL = 'https://ymspflrxipjlipncgzyy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inltc3BmbHJ4aXBqbGlwbmNnenl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2OTcxMzYsImV4cCI6MjA1NzI3MzEzNn0.jNFsla4rFX1WWiyS7Iu0GBYQQG8iMv2YLQ-3aHaWRGs';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let flashcards = [];
+    let currentCard = 0;
+
+    // Update flashcard display based on current card index
+    function updateCard() {
+      if (flashcards.length === 0) {
+        document.getElementById('flashcard-content').textContent = "No flashcards found.";
+        document.getElementById('flashcard-content-back').textContent = "";
+        document.getElementById('flashcard-number').textContent = "";
+        return;
+      }
+      document.getElementById('flashcard-number').textContent = "Flashcard " + (currentCard + 1);
+      document.getElementById('flashcard-content').textContent = flashcards[currentCard].front_text;
+      document.getElementById('flashcard-content-back').textContent = flashcards[currentCard].back_text;
+      // Always reset to the front side when updating the card
+      document.getElementById('flashcard').classList.remove('flipped');
+      document.getElementById('back-button').disabled = (currentCard === 0);
+      document.getElementById('next-button').disabled = (currentCard === flashcards.length - 1);
+    }
+
+    // Flip animation toggler
+    function flipCard() {
+      document.getElementById('flashcard').classList.toggle('flipped');
+    }
+
+    // Navigate to next card
+    function nextCard() {
+      if (currentCard < flashcards.length - 1) {
+        currentCard++;
+        updateCard();
+      }
+    }
+
+    // Navigate to previous card
+    function prevCard() {
+      if (currentCard > 0) {
+        currentCard--;
+        updateCard();
+      }
+    }
+
+    // Fetch flashcards from Supabase filtering by set_id
+    async function fetchFlashcards() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const quizId = urlParams.get('quiz_id');
+      const quizTitle = urlParams.get('quiz_title') || "Quiz Title";
+      document.getElementById('quiz-title').textContent = quizTitle;
+
+      if (!quizId) {
+        document.getElementById('flashcard-content').textContent = "No quiz specified.";
+        return;
+      }
+
+      // Convert quizId to a number (if stored as an integer)
+      const quizIdParsed = parseInt(quizId);
+
+      const { data, error } = await supabaseClient
+        .from('flashcards')
+        .select('*')
+        .eq('set_id', quizIdParsed)
+        .order('flashcard_id', { ascending: true });
+
+      console.log('Fetched data:', data);
+      if (error) {
+        console.error('Supabase error fetching flashcards:', error);
+        document.getElementById('flashcard-content').textContent = "Error loading flashcards.";
+        return;
+      }
+      if (!data || data.length === 0) {
+        document.getElementById('flashcard-content').textContent = "No flashcards found.";
+        document.getElementById('flashcard-content-back').textContent = "";
+        document.getElementById('flashcard-number').textContent = "";
+      } else {
+        flashcards = data;
+        currentCard = 0;
+        updateCard();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', fetchFlashcards);
+  </script>
+</body>
+</html>

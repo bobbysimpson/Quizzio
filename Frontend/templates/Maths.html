@@ -6,12 +6,18 @@
   <title>Quizzio - Maths</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    /* Only the main section scrolls */
+    /* Ensure quiz title links inside cards remain white */
+    .card h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .card h3 a:hover {
+      text-decoration: underline;
+    }
     main {
       overflow-y: auto;
       height: calc(100vh - 140px);
     }
-    /* Back button positioned at the top left */
     .back-button {
       position: absolute;
       top: 10px;
@@ -24,17 +30,15 @@
       font-weight: bold;
       z-index: 10;
     }
-    /* Give some top margin so the back button doesn't overlap content */
     .quizzes-container {
       margin-top: 50px;
     }
-    /* Quiz actions: same as in Science and English pages */
     .quiz-actions {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
       position: relative;
-      top: -50px; /* Adjust to vertically center icons on the card's right */
+      top: -50px;
     }
     .quiz-actions button {
       background: none;
@@ -61,7 +65,6 @@
   </header>
 
   <main>
-    <!-- Back button at top left -->
     <a href="{{ url_for('views.index') }}" class="back-button">Back</a>
     <section class="library-content">
       <h2 class="page-title">Maths Quizzes</h2>
@@ -70,15 +73,17 @@
           {% for quiz in quizzes %}
             <div class="subject-link">
               <div class="card">
-                <h3>{{ quiz.title }}</h3>
+                <h3>
+                  <a href="{{ url_for('views.flashcard', quiz_id=quiz.set_id, quiz_title=quiz.title) }}">
+                    {{ quiz.title }}
+                  </a>
+                </h3>
                 <p>Author: {{ quiz.users.username }}</p>
                 <p>Category: {{ quiz.category }}</p>
                 <div class="quiz-actions">
-                  <!-- Bookmark button: visible to everyone -->
                   <button class="bookmark-button">
                     <img src="https://img.icons8.com/ios-glyphs/20/f0c808/bookmark-ribbon.png" alt="Bookmark">
                   </button>
-                  <!-- Trash can button: only if current user is the author -->
                   {% if quiz.user_id == current_user.id %}
                     <button class="delete-button">
                       <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">

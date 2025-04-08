@@ -23,6 +23,14 @@
       width: 25px;
       height: 25px;
     }
+    /* Style the clickable quiz title */
+    .card h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .card h3 a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -45,25 +53,28 @@
       {% if quizzes and quizzes|length > 0 %}
         <div class="quizzes-container">
           {% for quiz in quizzes %}
-            <a href="{{ url_for('views.quiz_detail', quiz_id=quiz['set_id']) }}" class="subject-link">
-              <div class="card">
-                <h3>{{ quiz.title }}</h3>
-                <p>Author: {{ quiz.users.username }}</p>
-                <p>Category: {{ quiz.category }}</p>
-                <div class="quiz-actions">
-                  <!-- Bookmark button using yellow icon -->
-                  <button class="bookmark-button">
-                    <img src="https://img.icons8.com/ios-glyphs/20/f0c808/bookmark-ribbon.png" alt="Bookmark">
+            <div class="card">
+              <h3>
+                <!-- Clickable title sends quiz ID and title via the new flashcard route -->
+                <a href="{{ url_for('views.flashcard', quiz_id=quiz.set_id, quiz_title=quiz.title) }}">
+                  {{ quiz.title }}
+                </a>
+              </h3>
+              <p>Author: {{ quiz.users.username }}</p>
+              <p>Category: {{ quiz.category }}</p>
+              <div class="quiz-actions">
+                <!-- Bookmark button using yellow icon -->
+                <button class="bookmark-button">
+                  <img src="https://img.icons8.com/ios-glyphs/20/f0c808/bookmark-ribbon.png" alt="Bookmark">
+                </button>
+                <!-- Trash can button; only show if the quiz was created by the logged-in user -->
+                {% if quiz.user_id == current_user.id %}
+                  <button class="delete-button">
+                    <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
                   </button>
-                  <!-- Trash can button shown only if the quiz was created by the logged-in user -->
-                  {% if quiz.user_id == current_user.id %}
-                    <button class="delete-button">
-                      <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
-                    </button>
-                  {% endif %}
-                </div>
+                {% endif %}
               </div>
-            </a>
+            </div>
           {% endfor %}
         </div>
       {% else %}

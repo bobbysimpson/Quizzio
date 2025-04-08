@@ -162,3 +162,14 @@ def quiz_detail(quiz_id):
     response = supabase.table("flashcard_sets").select("*").eq("set_id", quiz_id).execute()
     quiz = response.data[0] if response.data else None
     return render_template("quiz_detail.html", quiz=quiz)
+
+@views.route('/flashcard')
+def flashcard():
+    # Get the quiz_id and quiz_title from the URL parameters.
+    quiz_id = request.args.get('quiz_id')
+    quiz_title = request.args.get('quiz_title', 'Quiz Title')
+    
+    # Optionally, you can do additional processing here if needed,
+    # such as querying Supabase for additional quiz details to pass along.
+    
+    return render_template('flashcard.html', quiz_id=quiz_id, quiz_title=quiz_title)

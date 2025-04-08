@@ -11,10 +11,13 @@
 
     <header>
         <h1>Quizzio</h1>
-        <div class="search-bar">
-            <input type="text" placeholder="Search sets, flashcards, questions..." />
-            <button><img src="https://img.icons8.com/ios-glyphs/20/ffffff/search--v1.png" alt="Search"></button>
-        </div>    
+        <!-- Search Bar -->
+        <form action="{{ url_for('views.search') }}" method="get" class="search-bar">
+          <input type="text" name="q" placeholder="Search sets, flashcards, questions..." required />
+          <button type="submit">
+              <img src="https://img.icons8.com/ios-glyphs/20/ffffff/search--v1.png" alt="Search">
+          </button>
+      </form>    
         <!-- User Info Box (Added Feature) -->
         <div class="user-box">
            <div class="user-info">

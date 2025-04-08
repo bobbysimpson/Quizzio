@@ -173,3 +173,18 @@ def flashcard():
     # such as querying Supabase for additional quiz details to pass along.
     
     return render_template('flashcard.html', quiz_id=quiz_id, quiz_title=quiz_title)
+
+@views.route('/search')
+@login_required
+def search():
+    query = request.args.get('q', '').strip()
+    supabase = current_app.config["SUPABASE_CLIENT"]
+
+    # Search in the title (you can add more fields if needed)
+    response = supabase.table("flashcard_sets") \
+        .select("set_id, title, category, created_at, user_id, users(username)") \
+        .ilike("title", f"%{query}%") \
+        .execute()
+
+    quizzes = response.data if response.data else []
+    return render_template("search_results.html", quizzes=quizzes, query=query)

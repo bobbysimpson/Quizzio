@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>Search Results - Quizzio</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+      /* Ensure quiz title links inside cards remain white */
+      .card h3 a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .card h3 a:hover {
+        text-decoration: underline;
+      }
+      </style>
 </head>
 <body>
     <header>

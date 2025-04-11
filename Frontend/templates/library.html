@@ -1,6 +1,3 @@
-#updated buttons back and bookmark
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +6,9 @@
   <title>Quizzio - Library</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
   <style>
+    /* Styling for quiz action buttons */
     .quiz-actions {
       display: flex;
       justify-content: flex-end;
@@ -26,6 +25,7 @@
       width: 25px;
       height: 25px;
     }
+    /* Ensure quiz title links inherit color */
     .card h3 a {
       color: inherit;
       text-decoration: none;
@@ -40,6 +40,7 @@
     <h1>Quizzio</h1>
     <div class="user-box">
       <div class="user-info">
+        <!-- Display username or "Guest" if not authenticated -->
         <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
         <a href="profile.html" class="profile-link">Profile</a>
         <a href="{{ url_for('auth.login') }}" class="logout-link">Logout</a>
@@ -56,6 +57,7 @@
           {% for quiz in quizzes %}
             <div class="card" data-set-id="{{ quiz.set_id }}">
               <h3>
+                <!-- Link to the flashcard view -->
                 <a href="{{ url_for('views.flashcard', quiz_id=quiz.set_id, quiz_title=quiz.title) }}">
                   {{ quiz.title }}
                 </a>
@@ -63,10 +65,12 @@
               <p>Author: {{ quiz.users.username }}</p>
               <p>Category: {{ quiz.category }}</p>
               <div class="quiz-actions">
-                <button class="bookmark-button" data-set-id="{{ quiz.set_id }}" data-bookmarked="false">
-                  <img src="https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png" alt="Bookmark" class="bookmark-icon">
+                <!-- Bookmark button with dynamic icon -->
+                <button class="bookmark-button" data-set-id="{{ quiz.set_id }}" data-bookmarked='true'>
+                  <img src="https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png" alt="Bookmark" class="bookmark-icon">
                 </button>
                 {% if quiz.user_id == current_user.id %}
+                  <!-- Delete button only for quiz owner -->
                   <button class="delete-button" data-quiz-id="{{ quiz.set_id }}">
                     <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
                   </button>
@@ -98,74 +102,68 @@
       <span>Library</span>
     </a>
   </nav>
-  
+
   <script>
-    const SUPABASE_URL = 'https://ymspflrxipjlipncgzyy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inltc3BmbHJ4aXBqbGlwbmNnenl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2OTcxMzYsImV4cCI6MjA1NzI3MzEzNn0.jNFsla4rFX1WWiyS7Iu0GBYQQG8iMv2YLQ-3aHaWRGs';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // Bookmark
-
     document.querySelectorAll('.bookmark-button').forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', async function() {
         const setId = this.getAttribute('data-set-id');
         const isBookmarked = this.getAttribute('data-bookmarked') === 'true';
         const bookmarkIcon = this.querySelector('.bookmark-icon');
-
-        if (isBookmarked) {
-          bookmarkIcon.src = 'https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png'; // Unbookmarked 
-          this.setAttribute('data-bookmarked', 'false');
-        } else {
-          bookmarkIcon.src = 'https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png'; // Bookmarked 
-          this.setAttribute('data-bookmarked', 'true');
+    
+        try {
+          let response;
+          if (isBookmarked) {
+            response = await fetch(`/api/unbookmark_set/${setId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            if (response.ok) {
+              const card = this.closest('.card');
+              if (card) {
+                card.remove();
+              }
+              if (document.querySelectorAll('.card').length === 0) {
+                const container = document.querySelector('.quizzes-container');
+                container.innerHTML = `
+                  <div class="empty-library">
+                    <p>You have no saved quizzes.</p>
+                    <a href="{{ url_for('views.index') }}" class="browse-link">Click here to browse or search for quizzes.</a>
+                  </div>
+                `;
+              }
+            }
+          } else {
+            response = await fetch(`/api/bookmark_set/${setId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+          }
+          const result = await response.json();
+          if (response.ok) {
+            if (isBookmarked) {
+              bookmarkIcon.src = 'https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png'; // Unbookmarked
+              this.setAttribute('data-bookmarked', 'false');
+            } else {
+              bookmarkIcon.src = 'https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png'; // Bookmarked
+              this.setAttribute('data-bookmarked', 'true');
+            }
+            console.log(result.message);
+          } else {
+            alert(result.error || 'Failed to update bookmark');
+          }
+        } catch (error) {
+          console.error('Error updating bookmark:', error);
+          alert('An error occurred while updating the bookmark');
         }
-
-        console.log(`Toggled bookmark for set ${setId} to ${!isBookmarked}`);
       });
     });
+    </script>
+</body>
+</html>
 
-    async function deleteQuiz(setId) {
-      if (!confirm('Are you sure you want to delete this quiz? This action cant be undone.')) {
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/sets/${setId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          const card = document.querySelector(`.card[data-set-id="${setId}"]`);
-          if (card) {
-            card.remove();
-          }
-          alert('Quiz deleted successfully!');
-          if (!document.querySelector('.card')) {
-            const container = document.querySelector('.quizzes-container');
-            container.innerHTML = `
-              <div class="empty-library">
-                <p>You have no saved quizzes.</p>
-                <a href="{{ url_for('views.index') }}" class="browse-link">Click here to browse or search for quizzes.</a>
-              </div>
-            `;
-          }
-        } else {
-          alert(result.error || 'Failed to delete quiz');
-        }
-      } catch (error) {
-        console.error('Error deleting quiz:', error);
-        alert('An error occurred while deleting the quiz');
-      }
-    }
-
-    document.querySelectorAll('.delete-button').forEach(button => {
-      button.addEventListener('click', () => deleteQuiz(button.getAttribute('data-quiz-id')));
-    });
-  </script>
 </body>
 </html>

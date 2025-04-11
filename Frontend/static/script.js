@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(payload)
         }).then(res => {
             if (res.ok) {
-                window.location.href = "/library"; // redirect to library page
+                window.location.href = "/library"; 
             } else {
                 alert("Failed to save quiz.");
             }
@@ -222,4 +222,98 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     }
+    async function deleteQuiz(setId) {
+      if (!confirm('Are you sure you want to delete this quiz? This action cant be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/sets/${setId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          const card = document.querySelector(`.card[data-set-id="${setId}"]`);
+          if (card) {
+            card.remove();
+          }
+          alert('Quiz deleted successfully!');
+          if (!document.querySelector('.card')) {
+            const container = document.querySelector('.quizzes-container');
+            container.innerHTML = `
+              <div class="empty-library">
+                <p>You have no saved quizzes.</p>
+                <a href="{{ url_for('views.index') }}" class="browse-link">Click here to browse or search for quizzes.</a>
+              </div>
+            `;
+          }
+        } else {
+          alert(result.error || 'Failed to delete quiz');
+        }
+      } catch (error) {
+        console.error('Error deleting quiz:', error);
+        alert('An error occurred while deleting the quiz');
+      }
+    }
+    document.querySelectorAll('.delete-button').forEach(button => {
+      button.addEventListener('click', () => deleteQuiz(button.getAttribute('data-quiz-id')));
+    });
+
+    document.querySelectorAll('.bookmark-button').forEach(button => {
+      button.addEventListener('click', async function() {
+          const setId = this.getAttribute('data-set-id');
+          const isBookmarked = this.getAttribute('data-bookmarked') === 'true';
+          const bookmarkIcon = this.querySelector('.bookmark-icon');
+          const card = this.closest('.card');
+  
+          try {
+              let response;
+              if (isBookmarked) {
+                  response = await fetch(`/api/unbookmark_set/${setId}`, {
+                      method: 'DELETE',
+                      headers: { 'Content-Type': 'application/json' },
+                  });
+                  if (response.ok) {
+                      if (card) card.remove();
+  
+                      if (!document.querySelectorAll('.card').length) {
+                          document.querySelector('.quizzes-container').innerHTML = `
+                              <div class="empty-library">
+                                  <p>You have no saved quizzes.</p>
+                                  <a href="/index" class="browse-link">Click here to browse or search for quizzes.</a>
+                              </div>
+                          `;
+                      }
+                  }
+              } else {
+                  response = await fetch(`/api/bookmark_set/${setId}`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                  });
+              }
+  
+              const result = await response.json();
+              if (response.ok) {
+                  if (isBookmarked) {
+                      bookmarkIcon.src = 'https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png'; // Outline
+                      this.setAttribute('data-bookmarked', 'false');
+                  } else {
+                      bookmarkIcon.src = 'https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png'; // Filled 
+                      this.setAttribute('data-bookmarked', 'true');
+                  }
+                  console.log(result.message);
+              } else {
+                  alert(result.error || 'Failed to update bookmark');
+              }
+          } catch (error) {
+              console.error('Error updating bookmark:', error);
+              alert('An error occurred while updating the bookmark');
+          }
+      });
+  });
 });

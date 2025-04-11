@@ -14,8 +14,8 @@
         <div class="user-box">
             <div class="user-info">
                 <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
-                <a href="profile.html" class="profile-link">Profile</a>
-                <a href="login.html" class="logout-link">Logout</a>
+                <a href="profile" class="profile-link">Profile</a>
+                <a href="login" class="logout-link">Logout</a>
             </div>
             <img src="{{ url_for('static', filename='default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">
         </div>

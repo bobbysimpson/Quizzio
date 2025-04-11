@@ -42,7 +42,7 @@
       <div class="user-info">
         <!-- Display username or "Guest" if not authenticated -->
         <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
-        <a href="profile.html" class="profile-link">Profile</a>
+        <a href="profile" class="profile-link">Profile</a>
         <a href="{{ url_for('auth.login') }}" class="logout-link">Logout</a>
       </div>
       <img src="{{ url_for('static', filename='default-profile.jpg') }}" alt="Profile Picture" class="profile-pic">

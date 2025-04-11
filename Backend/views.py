@@ -23,76 +23,216 @@ def create():
 @views.route('/english')
 def english():
     supabase = current_app.config["SUPABASE_CLIENT"]
-    # Query flashcard_sets where category contains "English"
+    
+    # Fetches quizzes in the a category
     response = supabase.table("flashcard_sets")\
         .select("set_id, title, category, created_at, user_id, users(username)")\
         .ilike("category", "%English%")\
         .execute()
     quizzes = response.data if response.data else []
+    
+    # Fetches bookmarked flashcard_ids
+    bookmarked_flashcards = supabase.table("bookmarks") \
+        .select("flashcard_id") \
+        .eq("user_id", current_user.id) \
+        .execute()
+    bookmarked_flashcard_ids = [item['flashcard_id'] for item in bookmarked_flashcards.data]
+    
+    if bookmarked_flashcard_ids:
+        bookmarked_sets_response = supabase.table("flashcards") \
+            .select("set_id") \
+            .in_("flashcard_id", bookmarked_flashcard_ids) \
+            .execute()
+        bookmarked_set_ids = list(set(item['set_id'] for item in bookmarked_sets_response.data))
+    else:
+        bookmarked_set_ids = []
+    
+    for quiz in quizzes:
+        quiz['is_bookmarked'] = quiz['set_id'] in bookmarked_set_ids
+
     return render_template("English.html", quizzes=quizzes)
 
 @views.route('/language')
 def language():
     supabase = current_app.config["SUPABASE_CLIENT"]
-    # Filter for quizzes whose category includes "Language" (case-insensitive)
+    
     response = supabase.table("flashcard_sets")\
         .select("set_id, title, category, created_at, user_id, users(username)")\
         .ilike("category", "%Language%")\
         .execute()
     quizzes = response.data if response.data else []
+    
+    bookmarked_flashcards = supabase.table("bookmarks") \
+        .select("flashcard_id") \
+        .eq("user_id", current_user.id) \
+        .execute()
+    bookmarked_flashcard_ids = [item['flashcard_id'] for item in bookmarked_flashcards.data]
+    
+    if bookmarked_flashcard_ids:
+        bookmarked_sets_response = supabase.table("flashcards") \
+            .select("set_id") \
+            .in_("flashcard_id", bookmarked_flashcard_ids) \
+            .execute()
+        bookmarked_set_ids = list(set(item['set_id'] for item in bookmarked_sets_response.data))
+    else:
+        bookmarked_set_ids = []
+    
+    for quiz in quizzes:
+        quiz['is_bookmarked'] = quiz['set_id'] in bookmarked_set_ids
+
     return render_template("Language.html", quizzes=quizzes)
 
 @views.route('/maths')
 def maths():
     supabase = current_app.config["SUPABASE_CLIENT"]
+    
     response = supabase.table("flashcard_sets")\
         .select("set_id, title, category, created_at, user_id, users(username)")\
-        .ilike("category", "%Math%")\
+        .ilike("category", "%Maths%")\
         .execute()
     quizzes = response.data if response.data else []
+    
+    bookmarked_flashcards = supabase.table("bookmarks") \
+        .select("flashcard_id") \
+        .eq("user_id", current_user.id) \
+        .execute()
+    bookmarked_flashcard_ids = [item['flashcard_id'] for item in bookmarked_flashcards.data]
+    
+    if bookmarked_flashcard_ids:
+        bookmarked_sets_response = supabase.table("flashcards") \
+            .select("set_id") \
+            .in_("flashcard_id", bookmarked_flashcard_ids) \
+            .execute()
+        bookmarked_set_ids = list(set(item['set_id'] for item in bookmarked_sets_response.data))
+    else:
+        bookmarked_set_ids = []
+    
+    for quiz in quizzes:
+        quiz['is_bookmarked'] = quiz['set_id'] in bookmarked_set_ids
+
     return render_template("Maths.html", quizzes=quizzes)
 
 @views.route('/science')
+@login_required
 def science():
     supabase = current_app.config["SUPABASE_CLIENT"]
-    # Query flashcard_sets for rows where the category contains "Science" (case-insensitive)
+    
     response = supabase.table("flashcard_sets")\
         .select("set_id, title, category, created_at, user_id, users(username)")\
         .ilike("category", "%Science%")\
         .execute()
     quizzes = response.data if response.data else []
+    
+    bookmarked_flashcards = supabase.table("bookmarks") \
+        .select("flashcard_id") \
+        .eq("user_id", current_user.id) \
+        .execute()
+    bookmarked_flashcard_ids = [item['flashcard_id'] for item in bookmarked_flashcards.data]
+    
+    if bookmarked_flashcard_ids:
+        bookmarked_sets_response = supabase.table("flashcards") \
+            .select("set_id") \
+            .in_("flashcard_id", bookmarked_flashcard_ids) \
+            .execute()
+        bookmarked_set_ids = list(set(item['set_id'] for item in bookmarked_sets_response.data))
+    else:
+        bookmarked_set_ids = []
+    
+    for quiz in quizzes:
+        quiz['is_bookmarked'] = quiz['set_id'] in bookmarked_set_ids
+    
     return render_template("Science.html", quizzes=quizzes)
 
 @views.route('/computing')
 def computing():
     supabase = current_app.config["SUPABASE_CLIENT"]
+    
     response = supabase.table("flashcard_sets")\
         .select("set_id, title, category, created_at, user_id, users(username)")\
         .ilike("category", "%Computing%")\
         .execute()
     quizzes = response.data if response.data else []
+    
+    bookmarked_flashcards = supabase.table("bookmarks") \
+        .select("flashcard_id") \
+        .eq("user_id", current_user.id) \
+        .execute()
+    bookmarked_flashcard_ids = [item['flashcard_id'] for item in bookmarked_flashcards.data]
+    
+    if bookmarked_flashcard_ids:
+        bookmarked_sets_response = supabase.table("flashcards") \
+            .select("set_id") \
+            .in_("flashcard_id", bookmarked_flashcard_ids) \
+            .execute()
+        bookmarked_set_ids = list(set(item['set_id'] for item in bookmarked_sets_response.data))
+    else:
+        bookmarked_set_ids = []
+    
+    for quiz in quizzes:
+        quiz['is_bookmarked'] = quiz['set_id'] in bookmarked_set_ids
+
     return render_template("Computing.html", quizzes=quizzes)
 
 @views.route('/other')
+@login_required 
 def other():
     supabase = current_app.config["SUPABASE_CLIENT"]
+    
     response = supabase.table("flashcard_sets")\
         .select("set_id, title, category, created_at, user_id, users(username)")\
         .ilike("category", "%Other%")\
         .execute()
     quizzes = response.data if response.data else []
+    
+    bookmarked_flashcards = supabase.table("bookmarks") \
+        .select("flashcard_id") \
+        .eq("user_id", current_user.id) \
+        .execute()
+    bookmarked_flashcard_ids = [item['flashcard_id'] for item in bookmarked_flashcards.data]
+    
+    if bookmarked_flashcard_ids:
+        bookmarked_sets_response = supabase.table("flashcards") \
+            .select("set_id") \
+            .in_("flashcard_id", bookmarked_flashcard_ids) \
+            .execute()
+        bookmarked_set_ids = list(set(item['set_id'] for item in bookmarked_sets_response.data))
+    else:
+        bookmarked_set_ids = []
+    
+    for quiz in quizzes:
+        quiz['is_bookmarked'] = quiz['set_id'] in bookmarked_set_ids
+    
     return render_template("Other.html", quizzes=quizzes)
 
 @views.route('/library')
 @login_required
 def library():
     supabase = current_app.config["SUPABASE_CLIENT"]
-    response = supabase.table("flashcard_sets") \
-        .select("set_id, title, category, created_at, user_id, users(username)") \
+
+    # Get bookmarked flashcard IDs for the current user
+    bookmarked_flashcards = supabase.table("bookmarks") \
+        .select("flashcard_id") \
         .eq("user_id", current_user.id) \
         .execute()
-    
-    quizzes = response.data if response.data else []
+    bookmarked_flashcard_ids = [item['flashcard_id'] for item in bookmarked_flashcards.data]
+
+    if not bookmarked_flashcard_ids:
+        quizzes = []
+    else:
+        # Get set IDs from bookmarked flashcards
+        sets_response = supabase.table("flashcards") \
+            .select("set_id") \
+            .in_("flashcard_id", bookmarked_flashcard_ids) \
+            .execute()
+        set_ids = list(set(item['set_id'] for item in sets_response.data))
+
+        # Fetch flashcard sets with bookmarked flashcards
+        response = supabase.table("flashcard_sets") \
+            .select("set_id, title, category, created_at, user_id, users(username)") \
+            .in_("set_id", set_ids) \
+            .execute()
+        quizzes = response.data if response.data else []
+
     return render_template("library.html", quizzes=quizzes)
 
 @views.route('/api/quizzes', methods=['POST'])
@@ -104,38 +244,42 @@ def save_quiz():
     flashcards = data.get('flashcards', [])
 
     supabase = current_app.config["SUPABASE_CLIENT"]
-    print("CATEGORY RECEIVED:", category)
 
     try:
-        # Step 1: Create a new flashcard set
+        # Create the flashcard set
         set_response = supabase.table("flashcard_sets").insert({
             "user_id": current_user.id,
             "title": title,
             "category": category
         }).execute()
-
         set_id = set_response.data[0]["set_id"]
 
-        # Step 2: Insert flashcards with that set_id
-        inserts = []
-        for card in flashcards:
-            inserts.append({
+        # Insert flashcards
+        flashcard_inserts = [
+            {
                 "user_id": current_user.id,
                 "set_id": set_id,
                 "front_text": card["name"],
                 "back_text": card["content"]
-            })
+            } for card in flashcards
+        ]
+        flashcard_response = supabase.table("flashcards").insert(flashcard_inserts).execute()
 
-        flashcard_response = supabase.table("flashcards").insert(inserts).execute()
+        if not flashcard_response.data:
+            return jsonify({"error": "Failed to insert flashcards"}), 500
 
-        if flashcard_response.data is None:
-            print("Supabase insert failed:", flashcard_response)
-            return jsonify({"error": "Database insert failed"}), 500
+        # Automatically bookmark all flashcards for the creator
+        flashcard_ids = [fc["flashcard_id"] for fc in flashcard_response.data]
+        bookmark_inserts = [
+            {"user_id": current_user.id, "flashcard_id": fc_id}
+            for fc_id in flashcard_ids
+        ]
+        supabase.table("bookmarks").insert(bookmark_inserts).execute()
 
-        return jsonify({"message": "Flashcard set saved successfully"}), 201
-    
+        return jsonify({"message": "Quiz saved and bookmarked successfully"}), 201
+
     except Exception as e:
-        print("Error saving to Supabase:", str(e))
+        print(f"Error saving quiz: {str(e)}")
         return jsonify({"error": "Server error"}), 500
     
 @views.route('/api/sets', methods=['GET'])
@@ -199,14 +343,18 @@ def delete_set(set_id):
 def bookmark_set(set_id):
     supabase = current_app.config["SUPABASE_CLIENT"]
     try:
-        # fetch
-        flashcards_response = supabase.table("flashcards").select("flashcard_id").eq("set_id", set_id).execute()
+        flashcards_response = supabase.table("flashcards") \
+            .select("flashcard_id") \
+            .eq("set_id", set_id) \
+            .execute()
         if not flashcards_response.data:
             return jsonify({"error": "No flashcards found in the set"}), 404
 
-        # create bookmark entries
-        bookmarks = [{"user_id": current_user.id, "flashcard_id": fc["flashcard_id"]} for fc in flashcards_response.data]
-        supabase.table("bookmarks").insert(bookmarks).execute()
+        bookmark_inserts = [
+            {"user_id": current_user.id, "flashcard_id": fc["flashcard_id"]}
+            for fc in flashcards_response.data
+        ]
+        supabase.table("bookmarks").insert(bookmark_inserts).execute()
 
         return jsonify({"message": "Set bookmarked successfully"}), 200
     except Exception as e:
@@ -218,13 +366,21 @@ def bookmark_set(set_id):
 def unbookmark_set(set_id):
     supabase = current_app.config["SUPABASE_CLIENT"]
     try:
-        flashcards_response = supabase.table("flashcards").select("flashcard_id").eq("set_id", set_id).execute()
+        flashcards_response = supabase.table("flashcards") \
+            .select("flashcard_id") \
+            .eq("set_id", set_id) \
+            .execute()
         if not flashcards_response.data:
             return jsonify({"error": "No flashcards found in the set"}), 404
 
-        # Delete bookmark entries 
         flashcard_ids = [fc["flashcard_id"] for fc in flashcards_response.data]
-        supabase.table("bookmarks").delete().eq("user_id", current_user.id).in_("flashcard_id", flashcard_ids).execute()
+
+        # Delete all bookmarks for these flashcards for the current user
+        supabase.table("bookmarks") \
+            .delete() \
+            .eq("user_id", current_user.id) \
+            .in_("flashcard_id", flashcard_ids) \
+            .execute()
 
         return jsonify({"message": "Set unbookmarked successfully"}), 200
     except Exception as e:

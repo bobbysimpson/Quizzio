@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quizzio - English</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
   <style>
     /* Ensure quiz title links stay white */
     .card h3 a {
@@ -81,11 +82,11 @@
                 <p>Author: {{ quiz.users.username }}</p>
                 <p>Category: {{ quiz.category }}</p>
                 <div class="quiz-actions">
-                  <button class="bookmark-button">
-                    <img src="https://img.icons8.com/ios-glyphs/20/f0c808/bookmark-ribbon.png" alt="Bookmark">
+                  <button class="bookmark-button" data-set-id="{{ quiz.set_id }}" data-bookmarked="{{ 'true' if quiz.is_bookmarked else 'false' }}">
+                    <img src="{{ 'https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png' if quiz.is_bookmarked else 'https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png' }}" alt="Bookmark" class="bookmark-icon">
                   </button>
                   {% if quiz.user_id == current_user.id %}
-                    <button class="delete-button">
+                    <button class="delete-button" data-quiz-id="{{ quiz.set_id }}">
                       <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
                     </button>
                   {% endif %}

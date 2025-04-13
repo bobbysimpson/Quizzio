@@ -15,12 +15,12 @@
     .card h3 a:hover {
       text-decoration: underline;
     }
-    /* Only the main section scrolls */
+
     main {
       overflow-y: auto;
       height: calc(100vh - 140px);
     }
-    /* Back button */
+
     .back-button {
       position: absolute;
       top: 10px;
@@ -33,10 +33,11 @@
       font-weight: bold;
       z-index: 10;
     }
+
     .quizzes-container {
       margin-top: 50px;
     }
-    /* Quiz actions */
+
     .quiz-actions {
       display: flex;
       justify-content: flex-end;
@@ -44,19 +45,39 @@
       position: relative;
       top: -50px;
     }
+
     .quiz-actions button {
       background: none;
       border: none;
       cursor: pointer;
     }
+
     .quiz-actions img {
       width: 25px;
       height: 25px;
     }
+
+    /* ✅ Highlight quizzes created by quizzioofficial */
+    .official-quiz {
+      border: 2px solid #f0c808;
+      box-shadow: 0 0 10px rgba(240, 200, 8, 0.5);
+    }
+
+    /* ✅ Optional: Small badge next to official quiz title */
+    .official-badge {
+      display: inline-block;
+      background-color: #f0c808;
+      color: black;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: 5px;
+    }
   </style>
 </head>
-<body>
-  <body data-page="category">
+
+<body data-page="category">
   <header>
     <h1>Quizzio</h1>
     <div class="user-box">
@@ -70,7 +91,6 @@
   </header>
 
   <main>
-    <!-- Back button -->
     <a href="{{ url_for('views.index') }}" class="back-button">Back</a>
     <section class="library-content">
       <h2 class="page-title">Computing Quizzes</h2>
@@ -78,21 +98,26 @@
         {% if quizzes and quizzes|length > 0 %}
           {% for quiz in quizzes %}
             <div class="subject-link">
-              <div class="card">
+              <!-- ✅ Conditionally add official-quiz class -->
+              <div class="card {% if quiz.users.username == 'quizzioofficial' %}official-quiz{% endif %}">
                 <h3>
                   <a href="{{ url_for('views.flashcard', quiz_id=quiz.set_id, quiz_title=quiz.title) }}">
                     {{ quiz.title }}
                   </a>
+                  <!-- ✅ Add badge if official -->
+                  {% if quiz.users.username == 'quizzioofficial' %}
+                    <span class="official-badge">Official</span>
+                  {% endif %}
                 </h3>
                 <p>Author: {{ quiz.users.username }}</p>
                 <p>Category: {{ quiz.category }}</p>
                 <div class="quiz-actions">
                   <button class="bookmark-button" data-set-id="{{ quiz.set_id }}" data-bookmarked="{{ 'true' if quiz.is_bookmarked else 'false' }}">
                     <img src="{{ 'https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png' if quiz.is_bookmarked else 'https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png' }}" alt="Bookmark" class="bookmark-icon">
-                </button>
-                <button class="delete-button" data-quiz-id="{{ quiz.set_id }}">
-                  <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
-                </button>
+                  </button>
+                  <button class="delete-button" data-quiz-id="{{ quiz.set_id }}">
+                    <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
+                  </button>
                 </div>
               </div>
             </div>

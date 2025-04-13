@@ -50,10 +50,27 @@
       width: 25px;
       height: 25px;
     }
+
+    /* ✅ Highlight quizzes created by quizzioofficial */
+    .official-quiz {
+      border: 2px solid #f0c808;
+      box-shadow: 0 0 10px rgba(240, 200, 8, 0.5);
+    }
+
+    /* ✅ Optional: Small badge next to official quiz title */
+    .official-badge {
+      display: inline-block;
+      background-color: #f0c808;
+      color: black;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: 5px;
+    }
   </style>
 </head>
-<body>
-  <body data-page="category">
+<body data-page="category">
   <header>
     <h1>Quizzio</h1>
     <div class="user-box">
@@ -74,11 +91,14 @@
         {% if quizzes and quizzes|length > 0 %}
           {% for quiz in quizzes %}
             <div class="subject-link">
-              <div class="card">
+              <div class="card {% if quiz.users.username == 'quizzioofficial' %}official-quiz{% endif %}">
                 <h3>
                   <a href="{{ url_for('views.flashcard', quiz_id=quiz.set_id, quiz_title=quiz.title) }}">
                     {{ quiz.title }}
                   </a>
+                  {% if quiz.users.username == 'quizzioofficial' %}
+                    <span class="official-badge">Official</span>
+                  {% endif %}
                 </h3>
                 <p>Author: {{ quiz.users.username }}</p>
                 <p>Category: {{ quiz.category }}</p>

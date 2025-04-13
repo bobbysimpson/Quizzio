@@ -8,7 +8,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
   <style>
-    /* Styling for quiz action buttons */
     .quiz-actions {
       display: flex;
       justify-content: flex-end;
@@ -25,7 +24,6 @@
       width: 25px;
       height: 25px;
     }
-    /* Ensure quiz title links inherit color */
     .card h3 a {
       color: inherit;
       text-decoration: none;
@@ -33,15 +31,32 @@
     .card h3 a:hover {
       text-decoration: underline;
     }
+
+    /* ✅ Yellow border for official quizzes */
+    .official-quiz {
+      border: 2px solid #f0c808;
+      box-shadow: 0 0 10px rgba(240, 200, 8, 0.5);
+    }
+
+    /* ✅ Official badge beside title */
+    .official-badge {
+      display: inline-block;
+      background-color: #f0c808;
+      color: black;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: 5px;
+    }
   </style>
 </head>
+
 <body data-page="library">
-<body>
   <header>
     <h1>Quizzio</h1>
     <div class="user-box">
       <div class="user-info">
-        <!-- Display username or "Guest" if not authenticated -->
         <span class="username">{{ current_user.username if current_user.is_authenticated else "Guest" }}</span>
         <a href="profile.html" class="profile-link">Profile</a>
         <a href="{{ url_for('auth.login') }}" class="logout-link">Logout</a>
@@ -56,22 +71,22 @@
       {% if quizzes and quizzes|length > 0 %}
         <div class="quizzes-container">
           {% for quiz in quizzes %}
-            <div class="card" data-set-id="{{ quiz.set_id }}">
+            <div class="card {% if quiz.users.username == 'quizzioofficial' %}official-quiz{% endif %}" data-set-id="{{ quiz.set_id }}">
               <h3>
-                <!-- Link to the flashcard view -->
                 <a href="{{ url_for('views.flashcard', quiz_id=quiz.set_id, quiz_title=quiz.title) }}">
                   {{ quiz.title }}
                 </a>
+                {% if quiz.users.username == 'quizzioofficial' %}
+                  <span class="official-badge">Official</span>
+                {% endif %}
               </h3>
               <p>Author: {{ quiz.users.username }}</p>
               <p>Category: {{ quiz.category }}</p>
               <div class="quiz-actions">
-                <!-- Bookmark button with dynamic icon -->
-                <button class="bookmark-button" data-set-id="{{ quiz.set_id }}" data-bookmarked='true'>
+                <button class="bookmark-button" data-set-id="{{ quiz.set_id }}" data-bookmarked="true">
                   <img src="https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png" alt="Bookmark" class="bookmark-icon">
                 </button>
                 {% if quiz.user_id == current_user.id %}
-                  <!-- Delete button only for quiz owner -->
                   <button class="delete-button" data-quiz-id="{{ quiz.set_id }}">
                     <img src="https://img.icons8.com/ios-glyphs/20/f0c808/trash.png" alt="Delete">
                   </button>
@@ -103,6 +118,5 @@
       <span>Library</span>
     </a>
   </nav>
-
 </body>
 </html>

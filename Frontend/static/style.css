@@ -708,3 +708,19 @@ main {
     resize: vertical; /* Allows user to resize if needed */
     min-height: 100px;
 }
+
+.official-quiz {
+    border: 2px solid #f0c808; /* same yellow as profile box */
+    box-shadow: 0 0 10px rgba(240, 200, 8, 0.5); /* optional glow */
+}
+
+.official-badge {
+    display: inline-block;
+    background-color: #f0c808;
+    color: black;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 5px;
+    margin-left: 5px;
+}

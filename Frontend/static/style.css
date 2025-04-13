@@ -694,3 +694,15 @@ main {
     text-decoration: none;
     color: white;
 }
+
+.flashcard-input-container textarea {
+    width: 70%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #3b3b57;
+    color: white;
+    font-size: 16px;
+    resize: vertical; /* Allows user to resize if needed */
+    min-height: 100px;
+}

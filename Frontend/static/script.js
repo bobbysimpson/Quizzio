@@ -165,10 +165,10 @@ document.addEventListener("DOMContentLoaded", function () {
           flashcard.innerHTML = `
               <h3>Flashcard ${flashcardCount}</h3>
               <div class="flashcard-input-container">
-                  <input type="text" placeholder="Enter front content" id="flashcardInputFront">
+                  <textarea placeholder="Enter back content..." id="flashcardInputBack" rows="6"></textarea>
               </div>
               <div class="flashcard-input-container">
-                  <input type="text" placeholder="Enter back content..." id="flashcardInputBack">
+                  <textarea placeholder="Enter back content..." id="flashcardInputBack" rows="6"></textarea>
               </div>
               <div class="flashcard-buttons">
                   <button id="nextFlashcardBtn">Next Flashcard</button>
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
           });
       
           document.getElementById("BackBtn").addEventListener("click", function () {
-              window.location.href = "create.html";
+              window.location.href = "/create";
           });
       }
 

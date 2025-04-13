@@ -10,7 +10,7 @@ editprofile = Blueprint('editprofile', __name__)
 
 @editprofile.route('/profile')
 def profile():
-    session['_flashes'].clear() # note this breaks all flashed messages on this page, need to fix this later
+    #session['_flashes'].clear() # note this breaks all flashed messages on this page, need to fix this later
     supabase = current_app.config["SUPABASE_CLIENT"]
     response = supabase.table("users").select("email").eq("username", current_user.username).execute()
     email = response.data[0]

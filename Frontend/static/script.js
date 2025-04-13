@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(payload)
         }).then(res => {
             if (res.ok) {
-                window.location.href = "/library"; 
+                window.location.href = "/library"; // redirect to library page
             } else {
                 alert("Failed to save quiz.");
             }
@@ -222,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     }
+    
     async function deleteQuiz(setId) {
       if (!confirm('Are you sure you want to delete this quiz? This action cant be undone.')) {
         return;
@@ -266,49 +267,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll('.bookmark-button').forEach(button => {
       button.addEventListener('click', async function() {
+          const pageType = document.body.getAttribute('data-page');
           const setId = this.getAttribute('data-set-id');
           const isBookmarked = this.getAttribute('data-bookmarked') === 'true';
           const bookmarkIcon = this.querySelector('.bookmark-icon');
-          const card = this.closest('.card');
-  
+
           try {
               let response;
               if (isBookmarked) {
+                  // Unbookmark
                   response = await fetch(`/api/unbookmark_set/${setId}`, {
                       method: 'DELETE',
                       headers: { 'Content-Type': 'application/json' },
                   });
                   if (response.ok) {
-                      if (card) card.remove();
-  
-                      if (!document.querySelectorAll('.card').length) {
-                          document.querySelector('.quizzes-container').innerHTML = `
-                              <div class="empty-library">
-                                  <p>You have no saved quizzes.</p>
-                                  <a href="/index" class="browse-link">Click here to browse or search for quizzes.</a>
-                              </div>
-                          `;
+                      if (pageType === 'library') {
+                          const card = this.closest('.card');
+                          if (card) card.remove();
+
+                          if (!document.querySelectorAll('.card').length) {
+                              document.querySelector('.quizzes-container').innerHTML = `
+                                  <div class="empty-library">
+                                      <p>You have no saved quizzes.</p>
+                                      <a href="/index" class="browse-link">Click here to browse or search for quizzes.</a>
+                                  </div>
+                              `;
+                          }
+                      } else {
+                          // Category page
+                        
+                          bookmarkIcon.src = 'https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png'; 
+                          this.setAttribute('data-bookmarked', 'false');
                       }
                   }
               } else {
+                  // Bookmark
                   response = await fetch(`/api/bookmark_set/${setId}`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                   });
-              }
-  
-              const result = await response.json();
-              if (response.ok) {
-                  if (isBookmarked) {
-                      bookmarkIcon.src = 'https://img.icons8.com/ios/20/f0c808/bookmark-ribbon--v1.png'; // Outline
-                      this.setAttribute('data-bookmarked', 'false');
-                  } else {
-                      bookmarkIcon.src = 'https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png'; // Filled 
+                  if (response.ok) {
+                      bookmarkIcon.src = 'https://img.icons8.com/ios-filled/20/f0c808/bookmark-ribbon.png'; 
                       this.setAttribute('data-bookmarked', 'true');
                   }
-                  console.log(result.message);
-              } else {
+              }
+
+              const result = await response.json();
+              if (!response.ok) {
                   alert(result.error || 'Failed to update bookmark');
+              } else {
+                  console.log(result.message);
               }
           } catch (error) {
               console.error('Error updating bookmark:', error);

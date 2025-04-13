@@ -321,18 +321,20 @@ main {
 /* User Box - Encloses Guest, Profile & Logout */
 .user-box {
     display: flex;
-    align-items: right;
+    align-items: center;
     background: #2b2b41;
     padding: 8px 15px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    max-width: 100px;
-    border: 2px solid #f0c808; /* Makes box visible */
-    gap: 10px; /* Space between elements */
+    border: 2px solid #f0c808;
+    gap: 10px;
     position: absolute;
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
+    max-width: none; 
+    width: auto; 
+    white-space: nowrap; 
 }
 
 /* User Info - Guest, Profile & Logout Links */

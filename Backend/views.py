@@ -401,3 +401,15 @@ def search():
 
     quizzes = response.data if response.data else []
     return render_template("search_results.html", quizzes=quizzes, query=query)
+
+@views.route('/login', methods=['GET'])
+def login():
+    return render_template("login.html")
+
+@views.route('/signup', methods=['GET'])
+def signup():
+    return render_template("signup.html")
+
+@views.route('/forgot_password', methods=['GET'])
+def forgot_password():
+    return render_template("forgotpass.html")

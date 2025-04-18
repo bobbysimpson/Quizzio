@@ -101,3 +101,7 @@ def logout():
     logout_user()
     flash("Logged out successfully.", "success")
     return redirect(url_for('auth.login'))
+
+@auth.route('/forgot_password', methods=['GET'])
+def forgot_password():
+    return render_template("forgotpass.html")

@@ -15,10 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const backToLogin1 = document.getElementById("backToLogin1");
   const backToLogin2 = document.getElementById("backToLogin2");
 
-  if (signupLink) signupLink.addEventListener("click", e => { e.preventDefault(); loginForm.classList.add("hidden"); signupForm.classList.remove("hidden"); });
-  if (forgotPasswordLink) forgotPasswordLink.addEventListener("click", e => { e.preventDefault(); loginForm.classList.add("hidden"); forgotPasswordForm.classList.remove("hidden"); });
-  if (backToLogin1) backToLogin1.addEventListener("click", e => { e.preventDefault(); signupForm.classList.add("hidden"); loginForm.classList.remove("hidden"); });
-  if (backToLogin2) backToLogin2.addEventListener("click", e => { e.preventDefault(); forgotPasswordForm.classList.add("hidden"); loginForm.classList.remove("hidden"); });
 
   // ----- Profile Editing -----
   window.enableEdit = function (id) {

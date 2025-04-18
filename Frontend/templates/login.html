@@ -52,9 +52,9 @@
         <input type="password" id="login-password" name="password" placeholder="Enter your password..." required />
         <button type="submit">Login</button>
         <div class="auth-links">
-          <a href="forgot_password" id="forgotPasswordLink">Forgot Password?</a>
+          <a href="{{ url_for('auth.forgot_password') }}" id="forgotPasswordLink">Forgot Password?</a>
           <span> | </span>
-          <a href="signup" id="signupLink">Sign Up</a>
+          <a href="{{ url_for('auth.signup') }}" id="signupLink">Sign Up</a>
         </div>
       </form>
     </section>
